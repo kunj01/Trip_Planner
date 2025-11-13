@@ -48,32 +48,42 @@ export const MainContextProvider = ({ children }) => {
         );
     }, [])
 
-    // Get Places for Map View
+    // Get Places for Map View with debouncing to prevent rate limiting
     useEffect(() => {
         let source = axios.CancelToken.source();
         let isMounted = true;
+        let timeoutId = null;
         
         // If bounds state value of southwest - 'sw' and northeast 'ne' is available then the try-catch block is fired
         if (bounds.sw && bounds.ne) {
-            // Setting loading state to true while data is being fetched 
-            setIsLoading(true);
+            // Debounce the API call to prevent too many requests
+            timeoutId = setTimeout(() => {
+                if (!isMounted) return;
+                
+                // Setting loading state to true while data is being fetched 
+                setIsLoading(true);
 
-            // Calling on the getPlacesByBounds endpoint passing in the type (hotels || attractions || restaurant), bounds and 'source' for error handling and effect cleanup
-            getPlacesByBounds(type, bounds.sw, bounds.ne, source)
-                .then(data => {
-                    if (isMounted) {
-                        // Response 'data' is ready and set to the places state
-                        setPlaces(Array.isArray(data) ? data.filter(place => place && place.name) : []);
-                        // Loading state set back to false - to stop loading, after data is fetched
-                        setIsLoading(false);
-                    }
-                })
-                .catch(() => {
-                    if (isMounted) {
-                        setPlaces([]);
-                        setIsLoading(false);
-                    }
-                });
+                // Calling on the getPlacesByBounds endpoint passing in the type (hotels || attractions || restaurant), bounds and 'source' for error handling and effect cleanup
+                getPlacesByBounds(type, bounds.sw, bounds.ne, source)
+                    .then(data => {
+                        if (isMounted) {
+                            // Response 'data' is ready and set to the places state
+                            setPlaces(Array.isArray(data) ? data.filter(place => place && place.name) : []);
+                            // Loading state set back to false - to stop loading, after data is fetched
+                            setIsLoading(false);
+                        }
+                    })
+                    .catch((error) => {
+                        if (isMounted) {
+                            // Only log non-cancellation errors
+                            if (!axios.isCancel(error)) {
+                                console.error('Error fetching places by bounds:', error.response?.status || error.message);
+                            }
+                            setPlaces([]);
+                            setIsLoading(false);
+                        }
+                    });
+            }, 300); // 300ms debounce delay
         } else {
             // If no bounds, ensure loading is false
             setIsLoading(false);
@@ -83,6 +93,9 @@ export const MainContextProvider = ({ children }) => {
         return () => {
             isMounted = false;
             source.cancel();
+            if (timeoutId) {
+                clearTimeout(timeoutId);
+            }
         }
     }, [type, bounds])
 
@@ -93,7 +106,8 @@ export const MainContextProvider = ({ children }) => {
 
         // if coordinates state value latitude 'lat' and longitude 'lng' is found, the try-catch block is fired
         if (coordinates.lat && coordinates.lng) {
-            // Calling on getPlacesByLatLng for 'restaurants' type, passing in parameter for 'limits' & 'min_rating'; and 'source' for error handling and effect cleanup
+            // Stagger API calls to prevent rate limiting (429 errors)
+            // Call restaurants immediately
             getPlacesByLatLng('restaurants', coordinates.lat, coordinates.lng, { limit: 20, min_rating: 4 }, source)
                 .then(data => {
                     if (isMounted) {
@@ -110,50 +124,64 @@ export const MainContextProvider = ({ children }) => {
                     }
                 });
 
-            // Calling on getPlacesByLatLng for 'attractions' type, passing in parameter for 'limits' & 'min_rating'; and 'source' for error handling and effect cleanup
-            getPlacesByLatLng('attractions', coordinates.lat, coordinates.lng, { limit: 20, min_rating: 4 }, source)
-                .then(data => {
-                    if (isMounted) {
-                        // Response 'data' received and set to attractions state filtering out data without 'name' property, 'location_id' === 0
-                        const filtered = Array.isArray(data) 
-                            ? data.filter(attraction => attraction && attraction.name && attraction.location_id != 0 && attraction.rating > 0) 
-                            : [];
-                        setAttractions(filtered);
-                    }
-                })
-                .catch(() => {
-                    if (isMounted) {
-                        setAttractions([]);
-                    }
-                });
+            // Call attractions after 500ms delay to avoid rate limiting
+            const attractionsTimeout = setTimeout(() => {
+                if (!isMounted) return;
+                getPlacesByLatLng('attractions', coordinates.lat, coordinates.lng, { limit: 20, min_rating: 4 }, source)
+                    .then(data => {
+                        if (isMounted) {
+                            // Response 'data' received and set to attractions state filtering out data without 'name' property, 'location_id' === 0
+                            const filtered = Array.isArray(data) 
+                                ? data.filter(attraction => attraction && attraction.name && attraction.location_id != 0 && attraction.rating > 0) 
+                                : [];
+                            setAttractions(filtered);
+                        }
+                    })
+                    .catch(() => {
+                        if (isMounted) {
+                            setAttractions([]);
+                        }
+                    });
+            }, 500);
             
-            // Calling on getPlacesByLatLng for 'hotels' type, passing in parameter for 'limits' & 'min_rating'; and 'source' for error handling and effect cleanup
-            getPlacesByLatLng('hotels', coordinates.lat, coordinates.lng, { limit: 20, min_rating: 4 }, source)
-                .then(data => {
-                    if (isMounted) {
-                        // Response 'data' received and set to hotels state filtering out data without 'name' property, 'location_id' === 0    
-                        const filtered = Array.isArray(data) 
-                            ? data.filter(hotel => hotel && hotel.name && hotel.location_id != 0 && hotel.rating > 0) 
-                            : [];
-                        setHotels(filtered);
-                    }
-                })
-                .catch(() => {
-                    if (isMounted) {
-                        setHotels([]);
-                    }
-                });
+            // Call hotels after 1000ms delay to avoid rate limiting
+            const hotelsTimeout = setTimeout(() => {
+                if (!isMounted) return;
+                getPlacesByLatLng('hotels', coordinates.lat, coordinates.lng, { limit: 20, min_rating: 4 }, source)
+                    .then(data => {
+                        if (isMounted) {
+                            // Response 'data' received and set to hotels state filtering out data without 'name' property, 'location_id' === 0    
+                            const filtered = Array.isArray(data) 
+                                ? data.filter(hotel => hotel && hotel.name && hotel.location_id != 0 && hotel.rating > 0) 
+                                : [];
+                            setHotels(filtered);
+                        }
+                    })
+                    .catch(() => {
+                        if (isMounted) {
+                            setHotels([]);
+                        }
+                    });
+            }, 1000);
+            
+            // Effect Cleanup
+            return () => {
+                isMounted = false;
+                source.cancel();
+                clearTimeout(attractionsTimeout);
+                clearTimeout(hotelsTimeout);
+            };
         } else {
             // If no coordinates, set empty arrays
             setRestaurants([]);
             setAttractions([]);
             setHotels([]);
-        }
-
-        // Effect Cleanup
-        return () => {
-            isMounted = false;
-            source.cancel();
+            
+            // Effect Cleanup
+            return () => {
+                isMounted = false;
+                source.cancel();
+            };
         }
     }, [coordinates]);
     

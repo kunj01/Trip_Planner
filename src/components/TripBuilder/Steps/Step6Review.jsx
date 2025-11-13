@@ -126,7 +126,7 @@ const Step6Review = ({ formData, updateFormData, nextStep, prevStep }) => {
     return (
       <div className="min-h-screen bg-gray-50 flex flex-col items-center justify-center px-4 py-12">
         <div className="w-full max-w-2xl text-center">
-          <div className="bg-white rounded-lg shadow-lg p-8">
+          <div className="bg-white rounded-xl shadow-lg p-12 border border-gray-200">
             <svg
               className="w-16 h-16 text-gray-400 mx-auto mb-4"
               fill="none"
@@ -148,7 +148,7 @@ const Step6Review = ({ formData, updateFormData, nextStep, prevStep }) => {
             </p>
             <button
               onClick={prevStep}
-              className="px-6 py-3 bg-[#00A680] text-white rounded-lg font-semibold hover:bg-[#008F6B] transition-colors"
+              className="px-6 py-3 bg-gray-700 text-white rounded-xl font-semibold hover:bg-gray-600 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105"
             >
               Go Back
             </button>
@@ -163,10 +163,10 @@ const Step6Review = ({ formData, updateFormData, nextStep, prevStep }) => {
     return (
       <div className="min-h-screen bg-gray-50">
         <div className="max-w-4xl mx-auto py-12 px-4">
-          <div className="bg-white rounded-lg shadow-lg p-8">
+          <div className="bg-white rounded-xl shadow-lg p-8 border border-gray-200">
             <div className="mb-6">
               <p className="text-sm text-gray-600 mb-2">Review our recommendations for your trip</p>
-              <h1 className="text-3xl font-bold text-[#00A680] mb-2">{formData.destination || 'Your Destination'}</h1>
+              <h1 className="text-3xl font-bold text-gray-800 mb-2">{formData.destination || 'Your Destination'}</h1>
               <p className="text-gray-600">
                 {getTripTypeLabel()} • {getDateRange()} • {getDaysCount()} {getDaysCount() === 1 ? 'day' : 'days'}
               </p>
@@ -198,13 +198,13 @@ const Step6Review = ({ formData, updateFormData, nextStep, prevStep }) => {
             <div className="flex justify-between items-center mt-8 pt-6 border-t border-gray-200">
               <button
                 onClick={prevStep}
-                className="text-[#00A680] font-semibold hover:underline px-4"
+                className="text-gray-700 font-semibold hover:text-gray-900 px-4 rounded-lg hover:bg-gray-100 transition-all duration-300"
               >
                 Back
               </button>
               <button
                 onClick={handleNext}
-                className="px-8 py-3 rounded-lg font-semibold text-white bg-[#00A680] hover:bg-[#008F6B] cursor-pointer transition-colors"
+                className="px-8 py-3 rounded-xl font-semibold text-white bg-gray-700 hover:bg-gray-600 cursor-pointer transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105"
               >
                 Continue to Itinerary
               </button>
@@ -218,12 +218,12 @@ const Step6Review = ({ formData, updateFormData, nextStep, prevStep }) => {
   return (
     <div className="min-h-screen bg-gray-50">
       <div className="max-w-6xl mx-auto py-12 px-4">
-        <div className="bg-white rounded-lg shadow-lg">
+        <div className="bg-white rounded-xl shadow-lg border border-gray-200">
           <div className="p-6">
             {/* Header */}
             <div className="mb-6">
               <p className="text-sm text-gray-600 mb-2">Review our recommendations for your trip</p>
-              <h1 className="text-3xl font-bold text-[#00A680] mb-2">{formData.destination || 'Your Destination'}</h1>
+              <h1 className="text-3xl font-bold text-gray-800 mb-2">{formData.destination || 'Your Destination'}</h1>
               <p className="text-gray-600">
                 {getTripTypeLabel()} • {getDateRange()} • {getDaysCount()} {getDaysCount() === 1 ? 'day' : 'days'}
               </p>
@@ -233,7 +233,7 @@ const Step6Review = ({ formData, updateFormData, nextStep, prevStep }) => {
             {recommendationGroups.length > 0 ? (
               recommendationGroups.map((group, groupIndex) => (
               <div key={groupIndex} className="mb-12">
-                <h2 className="text-2xl font-bold text-[#00A680] mb-3">{group.theme}</h2>
+                <h2 className="text-2xl font-bold text-gray-800 mb-3">{group.theme}</h2>
                 <p className="text-gray-600 mb-6 text-base leading-relaxed">
                   {group.description}
                 </p>
@@ -245,8 +245,8 @@ const Step6Review = ({ formData, updateFormData, nextStep, prevStep }) => {
                     return (
                       <div
                         key={rec.place_id || rec.id}
-                        className={`relative rounded-lg overflow-hidden border-2 cursor-pointer transition-all hover:shadow-lg ${
-                          isSelected ? 'border-[#00A680] ring-2 ring-[#00A680] ring-offset-2' : 'border-gray-200 hover:border-gray-300'
+                        className={`relative rounded-xl overflow-hidden border-2 cursor-pointer transition-all duration-300 hover:shadow-lg transform hover:scale-105 ${
+                          isSelected ? 'border-gray-600 ring-2 ring-gray-400 ring-offset-2 shadow-md' : 'border-gray-200 hover:border-gray-400'
                         }`}
                         onClick={() => handleToggleRecommendation(rec.place_id || rec.id)}
                       >
@@ -287,7 +287,7 @@ const Step6Review = ({ formData, updateFormData, nextStep, prevStep }) => {
                             <span className="text-gray-500 text-xs text-center px-3 line-clamp-2 font-medium">{rec.name}</span>
                           </div>
                           {isSelected && (
-                            <div className="absolute top-2 right-2 bg-[#00A680] rounded-full p-1.5 shadow-lg z-10 animate-pulse">
+                            <div className="absolute top-2 right-2 bg-gray-700 rounded-full p-2 shadow-lg z-10">
                               <svg
                                 className="w-5 h-5 text-white"
                                 fill="none"
@@ -327,7 +327,7 @@ const Step6Review = ({ formData, updateFormData, nextStep, prevStep }) => {
                 <p className="text-gray-600 mb-4">No recommendations available yet.</p>
                 <button
                   onClick={prevStep}
-                  className="px-6 py-3 bg-[#00A680] text-white rounded-lg font-semibold hover:bg-[#008F6B] transition-colors"
+                  className="px-8 py-3 bg-gray-700 text-white rounded-xl font-semibold hover:bg-gray-600 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105"
                 >
                   Go Back
                 </button>
@@ -347,7 +347,7 @@ const Step6Review = ({ formData, updateFormData, nextStep, prevStep }) => {
                   <div className={`
                     relative inline-flex h-6 w-11 items-center rounded-full transition-colors
                     ${selectedRecommendations.length === recommendations.length && recommendations.length > 0
-                      ? 'bg-[#00A680]' : 'bg-gray-300'}
+                      ? 'bg-gray-700' : 'bg-gray-300'}
                   `}>
                     <span
                       className={`
@@ -366,18 +366,26 @@ const Step6Review = ({ formData, updateFormData, nextStep, prevStep }) => {
             
             {/* Navigation Footer */}
             <div className="flex justify-between items-center mt-8 pt-6 border-t border-gray-200">
-              <button
-                onClick={prevStep}
-                className="text-[#00A680] font-semibold hover:underline px-4"
-              >
-                Back
-              </button>
-              <button
-                onClick={handleNext}
-                className="px-8 py-3 rounded-lg font-semibold text-white bg-[#00A680] hover:bg-[#008F6B] cursor-pointer transition-colors"
-              >
-                Next
-              </button>
+            <button
+              onClick={prevStep}
+              className="group inline-flex items-center px-6 py-3 text-gray-700 font-semibold hover:text-gray-900 rounded-xl hover:bg-gray-100 transition-all duration-300 transform hover:-translate-x-1"
+            >
+              <svg className="w-5 h-5 mr-2 transform group-hover:-translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+              </svg>
+              Back
+            </button>
+            <button
+              onClick={handleNext}
+              className="px-10 py-4 rounded-xl font-semibold text-white text-lg bg-gray-700 hover:bg-gray-600 cursor-pointer transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105"
+            >
+              <span className="flex items-center">
+                Continue
+                <svg className="w-5 h-5 ml-2 transform group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                </svg>
+              </span>
+            </button>
             </div>
           </div>
         </div>

@@ -8,13 +8,32 @@ import axios from "axios";
 import { Link } from "react-router-dom";
 
 const AttractionsList = () => {
-    const { coordinates, isLoading, setIsLoading } = useContext(MainContext);
+    const context = useContext(MainContext);
+    const { coordinates, isLoading, setIsLoading } = context || {};
     const [attractions, setAttractions] = useState();
+    
+    // Safety check - if context is not available, show loading
+    if (!context) {
+        return (
+            <>
+                <Navbar border />
+                <div className="container mx-auto pb-4">
+                    <div className="text-center my-10">
+                        <h1 className="font-semibold text-lg md:text-3xl">
+                            Attractions near you
+                        </h1>
+                    </div>
+                    <AttractionsListLoader />
+                </div>
+                <Footer />
+            </>
+        );
+    }
 
     // Effect to fetch list of places for component from the getPlacesByLatLng endpoint and effect is reran on change of coordinates 
     useEffect(() => {
-        if (!coordinates.lat || !coordinates.lng) {
-            setIsLoading(false);
+        if (!coordinates || !coordinates.lat || !coordinates.lng) {
+            if (setIsLoading) setIsLoading(false);
             return;
         }
 

@@ -92,12 +92,12 @@ const Calendar = ({ startDate, endDate, onDateSelect, maxDays = 7 }) => {
           onClick={() => !disabled && handleDateClick(day, month, year)}
           disabled={disabled}
           className={`
-            h-10 w-10 rounded-full text-sm font-medium transition-colors
+            h-12 w-12 rounded-xl text-sm font-bold transition-all duration-300
             ${disabled ? 'text-gray-300 cursor-not-allowed' : 'cursor-pointer'}
-            ${selected ? 'bg-[#00A680] text-white' : ''}
+            ${selected ? 'bg-gray-700 text-white shadow-md scale-110' : ''}
             ${inRange && !selected ? 'bg-gray-100 text-gray-700' : ''}
-            ${!disabled && !selected && !inRange ? 'hover:bg-gray-50 text-gray-700' : ''}
-            ${isStart || isEnd ? 'ring-2 ring-[#00A680] ring-offset-2' : ''}
+            ${!disabled && !selected && !inRange ? 'hover:bg-gray-100 text-gray-700 hover:scale-105' : ''}
+            ${isStart || isEnd ? 'ring-2 ring-gray-400 ring-offset-2' : ''}
           `}
         >
           {day}
@@ -111,20 +111,20 @@ const Calendar = ({ startDate, endDate, onDateSelect, maxDays = 7 }) => {
         <div className="flex items-center justify-between mb-4">
           <button
             onClick={() => navigateMonth(-1, isSecond)}
-            className="p-2 hover:bg-gray-100 rounded-lg"
+            className="p-2 hover:bg-gray-100 rounded-xl transition-colors"
           >
-            <svg className="w-5 h-5 text-[#00A680]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="w-5 h-5 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
             </svg>
           </button>
-          <h3 className="text-lg font-semibold text-[#00A680]">
+          <h3 className="text-lg font-bold text-gray-800">
             {monthNames[month]} {year}
           </h3>
           <button
             onClick={() => navigateMonth(1, isSecond)}
-            className="p-2 hover:bg-gray-100 rounded-lg"
+            className="p-2 hover:bg-gray-100 rounded-xl transition-colors"
           >
-            <svg className="w-5 h-5 text-[#00A680]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="w-5 h-5 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
             </svg>
           </button>
@@ -148,7 +148,7 @@ const Calendar = ({ startDate, endDate, onDateSelect, maxDays = 7 }) => {
   };
 
   return (
-    <div className="bg-white rounded-lg p-6 shadow-sm">
+    <div className="bg-white rounded-2xl p-8 shadow-xl border border-gray-100">
       <div className="flex flex-col md:flex-row gap-8">
         {renderCalendar(currentMonth, false)}
         {renderCalendar(secondMonth, true)}

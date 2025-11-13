@@ -6,25 +6,29 @@ if (!apiKey) {
   console.error('VITE_GOOGLE_MAP_API_KEY is not configured. Please set it in your .env file.');
 }
 
-const loader = new Loader({
-  apiKey: apiKey || '',
-  version: 'weekly',
-  libraries: ['places'],
-});
-
+let loader = null;
 let placesService;
-let apiLoadPromise;
+let apiLoadPromise = null;
 
-// Create a promise that resolves when the API is loaded
-apiLoadPromise = loader.load()
-  .then(() => {
-    placesService = new google.maps.places.PlacesService(document.createElement('div'));
-    return placesService;
-  })
-  .catch((error) => {
-    console.error('Error loading Google Maps API:', error);
-    throw new Error('Failed to load Google Maps API. Please check your API key and network connection.');
-  });
+// Only create loader if API is not already loaded
+const getOrCreateLoader = () => {
+  // Check if Google Maps API is already loaded globally (from Map component)
+  if (window.google && window.google.maps && window.google.maps.places) {
+    console.log('Google Maps API already loaded globally, skipping loader creation');
+    return null;
+  }
+  
+  // Only create loader if it doesn't exist
+  if (!loader && apiKey) {
+    loader = new Loader({
+      apiKey: apiKey,
+      libraries: ['places'],
+      // Don't specify version to match google-map-react's default behavior
+    });
+  }
+  
+  return loader;
+};
 
 // Helper function to ensure API is loaded before use
 const ensureApiLoaded = async () => {
@@ -33,30 +37,77 @@ const ensureApiLoaded = async () => {
     throw new Error('Google Maps API key is not configured. Please set VITE_GOOGLE_MAP_API_KEY in your .env file.');
   }
   
-  // Check if Google Maps API is already loaded globally (from Map component)
-  if (window.google && window.google.maps && window.google.maps.places && !placesService) {
-    console.log('Google Maps API already loaded globally, creating PlacesService');
-    placesService = new google.maps.places.PlacesService(document.createElement('div'));
+  // First, check if Google Maps API is already loaded globally (from Map component)
+  if (window.google && window.google.maps && window.google.maps.places) {
+    if (!placesService) {
+      console.log('Google Maps API already loaded globally, creating PlacesService');
+      placesService = new google.maps.places.PlacesService(document.createElement('div'));
+    }
     return placesService;
   }
   
-  // Wait for API to load with timeout
+  // If API is not loaded, wait for it to load via event or create loader
   if (!placesService) {
     try {
-      console.log('Waiting for Google Maps API to load...');
-      // Add timeout to prevent hanging (30 seconds)
-      const timeoutPromise = new Promise((_, reject) => 
-        setTimeout(() => reject(new Error('API loading timeout after 30 seconds')), 30000)
-      );
+      // Wait for the map to load the API (listen for the event)
+      const waitForApiEvent = new Promise((resolve) => {
+        let interval = null;
+        
+        const checkApi = () => {
+          if (window.google && window.google.maps && window.google.maps.places) {
+            if (interval) {
+              clearInterval(interval);
+            }
+            resolve();
+            return true;
+          }
+          return false;
+        };
+        
+        // Check immediately
+        if (checkApi()) {
+          return; // Already loaded
+        }
+        
+        // Listen for API loaded event from Map component
+        window.addEventListener('google-maps-api-loaded', checkApi, { once: true });
+        
+        // Also poll for API (max 10 seconds)
+        let attempts = 0;
+        const maxAttempts = 100;
+        interval = setInterval(() => {
+          attempts++;
+          if (checkApi() || attempts >= maxAttempts) {
+            if (interval) {
+              clearInterval(interval);
+            }
+            resolve();
+          }
+        }, 100);
+      });
       
-      await Promise.race([apiLoadPromise, timeoutPromise]);
+      await waitForApiEvent;
       
-      // Double check placesService is available
-      if (!placesService) {
-        // Try to create it if it doesn't exist but API is loaded
-        if (window.google && window.google.maps && window.google.maps.places) {
-          console.log('Creating PlacesService from global Google Maps API');
-          placesService = new google.maps.places.PlacesService(document.createElement('div'));
+      // Now create PlacesService if API is available
+      if (window.google && window.google.maps && window.google.maps.places) {
+        console.log('Creating PlacesService from global Google Maps API');
+        placesService = new google.maps.places.PlacesService(document.createElement('div'));
+      } else {
+        // If still not loaded, try using loader as fallback
+        const mapLoader = getOrCreateLoader();
+        if (mapLoader && !apiLoadPromise) {
+          console.log('Loading Google Maps API via loader...');
+          apiLoadPromise = mapLoader.load()
+            .then(() => {
+              placesService = new google.maps.places.PlacesService(document.createElement('div'));
+              return placesService;
+            })
+            .catch((error) => {
+              console.error('Error loading Google Maps API:', error);
+              throw new Error('Failed to load Google Maps API. Please check your API key and network connection.');
+            });
+          
+          await apiLoadPromise;
         } else {
           throw new Error('Google Maps API failed to initialize properly');
         }
@@ -65,9 +116,9 @@ const ensureApiLoaded = async () => {
       console.log('Google Maps API loaded successfully');
     } catch (error) {
       console.error('Error loading Google Maps API:', error);
-      // Check if API is available globally as fallback
+      // Final fallback check
       if (window.google && window.google.maps && window.google.maps.places) {
-        console.log('Using global Google Maps API as fallback');
+        console.log('Using global Google Maps API as final fallback');
         placesService = new google.maps.places.PlacesService(document.createElement('div'));
         return placesService;
       }

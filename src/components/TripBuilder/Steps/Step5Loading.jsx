@@ -123,13 +123,13 @@ const Step5Loading = ({ formData, updateFormData, nextStep, prevStep }) => {
               <div className="flex gap-4">
                 <button
                   onClick={prevStep}
-                  className="px-6 py-3 bg-gray-200 text-gray-700 rounded-lg font-semibold hover:bg-gray-300 transition-colors"
+                  className="px-6 py-3 bg-gray-200 text-gray-700 rounded-xl font-bold hover:bg-gray-300 transition-all duration-300"
                 >
                   Go Back
                 </button>
                 <button
                   onClick={() => window.location.reload()}
-                  className="px-6 py-3 bg-[#00A680] text-white rounded-lg font-semibold hover:bg-[#008F6B] transition-colors"
+                  className="px-8 py-3 bg-gray-700 text-white rounded-xl font-semibold hover:bg-gray-600 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105"
                 >
                   Try Again
                 </button>
@@ -145,12 +145,12 @@ const Step5Loading = ({ formData, updateFormData, nextStep, prevStep }) => {
     <div className="min-h-screen flex flex-col items-center justify-center px-4 py-12">
       <div className="w-full max-w-2xl text-center">
         {/* Loading Overlay */}
-        <div className="bg-[#00A680] rounded-lg p-12 text-white">
+        <div className="bg-gray-700 rounded-2xl p-12 text-white shadow-2xl">
           <div className="flex flex-col items-center">
             {/* AI Icon/Sparkle */}
             <div className="mb-6">
               <svg
-                className="w-16 h-16 animate-pulse"
+                className="w-20 h-20 animate-pulse drop-shadow-lg"
                 fill="currentColor"
                 viewBox="0 0 24 24"
               >
@@ -159,19 +159,19 @@ const Step5Loading = ({ formData, updateFormData, nextStep, prevStep }) => {
             </div>
             
             {/* Main Heading */}
-            <h1 className="text-3xl md:text-4xl font-bold mb-4">
+            <h1 className="text-4xl md:text-5xl font-bold mb-4 drop-shadow-lg">
               Building a trip just for you
             </h1>
             
             {/* Sub-text */}
-            <p className="text-lg text-white/90 mb-6">
+            <p className="text-xl text-white/90 mb-8 font-medium">
               Remember, you can remove anything you don't like.
             </p>
 
             {/* Loading Spinner */}
             {isGenerating && (
               <div className="flex justify-center">
-                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-white"></div>
+                <div className="animate-spin rounded-full h-16 w-16 border-4 border-white/30 border-t-white"></div>
               </div>
             )}
           </div>
@@ -183,7 +183,7 @@ const Step5Loading = ({ formData, updateFormData, nextStep, prevStep }) => {
             {[1, 2, 3].map((i) => (
               <div
                 key={i}
-                className="h-24 bg-gray-200 rounded-lg animate-pulse"
+                className="h-24 bg-gray-200 rounded-xl animate-pulse border border-gray-300"
               />
             ))}
           </div>

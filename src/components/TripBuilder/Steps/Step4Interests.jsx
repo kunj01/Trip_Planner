@@ -62,12 +62,12 @@ const Step4Interests = ({ formData, updateFormData, nextStep, prevStep }) => {
     <div className="min-h-screen flex flex-col items-center justify-center px-4 py-12">
       <div className="w-full max-w-5xl">
         {/* Main Heading */}
-        <h1 className="text-4xl md:text-5xl font-bold text-[#00A680] text-center mb-4">
+        <h1 className="text-5xl md:text-6xl font-bold text-gray-800 text-center mb-4">
           Tell us what you're interested in
         </h1>
         
         {/* Sub-text */}
-        <p className="text-gray-600 text-center mb-8 text-lg">
+        <p className="text-gray-600 text-center mb-12 text-xl max-w-2xl mx-auto">
           Select all that apply.
         </p>
 
@@ -80,11 +80,11 @@ const Step4Interests = ({ formData, updateFormData, nextStep, prevStep }) => {
                 key={interest.id}
                 onClick={() => handleInterestToggle(interest.id)}
                 className={`
-                  p-4 rounded-lg border-2 transition-all text-left
+                  p-5 rounded-xl border-2 transition-all duration-300 text-left transform hover:scale-105 shadow-sm hover:shadow-md
                   ${
                     isSelected
-                      ? 'border-[#00A680] bg-[#00A680] text-white'
-                      : 'border-[#00A680] bg-white text-[#00A680] hover:bg-gray-50'
+                      ? 'border-gray-600 bg-gray-700 text-white shadow-md'
+                      : 'border-gray-300 bg-white text-gray-700 hover:bg-gray-50 hover:border-gray-400'
                   }
                 `}
               >
@@ -117,7 +117,7 @@ const Step4Interests = ({ formData, updateFormData, nextStep, prevStep }) => {
           {!showAddInterest && (
             <button
               onClick={() => setShowAddInterest(true)}
-              className="p-4 rounded-lg border-2 border-[#00A680] bg-white text-[#00A680] hover:bg-gray-50 transition-all"
+              className="p-5 rounded-xl border-2 border-gray-300 bg-white text-gray-700 hover:bg-gray-50 hover:border-gray-400 transition-all duration-300 transform hover:scale-105 shadow-sm hover:shadow-md"
             >
               <div className="flex items-center gap-2">
                 <svg
@@ -140,13 +140,13 @@ const Step4Interests = ({ formData, updateFormData, nextStep, prevStep }) => {
 
           {/* Add Interest Input */}
           {showAddInterest && (
-            <div className="p-4 rounded-lg border-2 border-[#00A680] bg-white">
+            <div className="p-5 rounded-2xl border-2 border-indigo-200 bg-white">
               <input
                 type="text"
                 value={newInterest}
                 onChange={(e) => setNewInterest(e.target.value)}
                 placeholder="Enter interest..."
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#00A680] mb-2"
+                className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-400 focus:border-gray-500 mb-3"
                 onKeyPress={(e) => {
                   if (e.key === 'Enter') {
                     handleAddInterest();
@@ -154,10 +154,10 @@ const Step4Interests = ({ formData, updateFormData, nextStep, prevStep }) => {
                 }}
                 autoFocus
               />
-              <div className="flex gap-2">
+              <div className="flex gap-3">
                 <button
                   onClick={handleAddInterest}
-                  className="flex-1 px-3 py-1 bg-[#00A680] text-white rounded-lg text-sm font-semibold hover:bg-[#008F6B]"
+                  className="flex-1 px-4 py-2 bg-gray-700 text-white rounded-xl text-sm font-semibold hover:bg-gray-600 transition-all duration-300 shadow-md hover:shadow-lg"
                 >
                   Add
                 </button>
@@ -188,16 +188,24 @@ const Step4Interests = ({ formData, updateFormData, nextStep, prevStep }) => {
         <div className="flex justify-between items-center">
           <button
             onClick={prevStep}
-            className="text-[#00A680] font-semibold hover:underline"
+            className="group inline-flex items-center px-6 py-3 text-gray-700 font-semibold hover:text-gray-900 rounded-xl hover:bg-gray-100 transition-all duration-300 transform hover:-translate-x-1"
           >
+            <svg className="w-5 h-5 mr-2 transform group-hover:-translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+            </svg>
             Back
           </button>
           
           <button
             onClick={handleSubmit}
-            className="px-8 py-3 rounded-lg font-semibold text-white bg-[#00A680] hover:bg-[#008F6B] cursor-pointer transition-colors"
+            className="px-10 py-4 rounded-xl font-semibold text-white text-lg bg-gray-700 hover:bg-gray-600 cursor-pointer transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105"
           >
-            Submit
+            <span className="flex items-center">
+              Continue
+              <svg className="w-5 h-5 ml-2 transform group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+              </svg>
+            </span>
           </button>
         </div>
       </div>

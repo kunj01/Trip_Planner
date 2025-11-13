@@ -31,6 +31,8 @@ const HotelsList = () => {
     const { coordinates, isLoading, setIsLoading, setType } = useContext(MainContext);
     const [hotels, setHotels] = useState();
     const [guestsToggle, setGuestsToggle] = useState(false);
+    const [error, setError] = useState(null);
+    const [retryCount, setRetryCount] = useState(0);
     const history = useHistory();
 
     // Scroll State Handler
@@ -88,13 +90,34 @@ const HotelsList = () => {
                         ? data.filter(item => item && item.name) 
                         : [];
                     setHotels(filtered);
+                    setError(null); // Clear any previous errors
 
                     // Loading state set back to false to stop loading
                     setIsLoading(false);
                 }
             })
-            .catch(() => {
+            .catch((error) => {
                 if (isMounted) {
+                    // Only log non-cancellation errors
+                    if (!axios.isCancel(error)) {
+                        const status = error.response?.status;
+                        let errorMessage = 'Failed to load hotels. ';
+                        
+                        if (status === 429) {
+                            errorMessage += 'Rate limit exceeded. Please try again later.';
+                        } else if (status === 401 || status === 403) {
+                            errorMessage += 'API authentication failed. Please check your API key.';
+                        } else if (status === 502 || status === 503 || status === 504) {
+                            errorMessage += 'Server error. The API may be temporarily unavailable.';
+                        } else if (error.code === 'ECONNABORTED' || error.message.includes('timeout')) {
+                            errorMessage += 'Request timeout. Please try again.';
+                        } else {
+                            errorMessage += 'Please check your connection and try again.';
+                        }
+                        
+                        setError(errorMessage);
+                        console.error('Error fetching hotels:', error.response?.status || error.message);
+                    }
                     setHotels([]);
                     setIsLoading(false);
                 }
@@ -105,7 +128,7 @@ const HotelsList = () => {
             isMounted = false;
             source.cancel();
         }
-    }, [coordinates, filterParams, setIsLoading])
+    }, [coordinates, filterParams, setIsLoading, retryCount])
 
     return ( 
        <>
@@ -299,12 +322,38 @@ const HotelsList = () => {
 
                     {/* Hotels Listing */}
                     <div className="lg:col-span-9">
-                        { !hotels || isLoading ? (
-                            // Displays a loading if 'hotels' has no data in state or data fetching is in loading state
+                        { isLoading ? (
+                            // Displays a loading if data fetching is in loading state
                             <PlaceListLoader />
+                        ) : error ? (
+                            // Display error message if there's an error
+                            <div className="text-center py-10 px-4">
+                                <div className="bg-red-50 border border-red-200 rounded-lg p-6 max-w-md mx-auto">
+                                    <svg className="mx-auto h-12 w-12 text-red-400 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                    </svg>
+                                    <h3 className="text-lg font-semibold text-red-800 mb-2">Error Loading Hotels</h3>
+                                    <p className="text-red-600 text-sm mb-4">{error}</p>
+                                    <button
+                                        onClick={() => {
+                                            setError(null);
+                                            setRetryCount(prev => prev + 1); // Trigger retry
+                                        }}
+                                        className="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700 transition"
+                                    >
+                                        Retry
+                                    </button>
+                                </div>
+                            </div>
+                        ) : !hotels || hotels.length === 0 ? (
+                            // Display message if no hotels found
+                            <div className="text-center py-10 px-4">
+                                <p className="text-gray-500 text-lg">No hotels found for your search criteria.</p>
+                                <p className="text-gray-400 text-sm mt-2">Try adjusting your filters or search location.</p>
+                            </div>
                         ) : (
-                            // Maps through 'hotels' list when it is ready or data fetching is not in loading state
-                            hotels?.map((hotel, i) => (
+                            // Maps through 'hotels' list when it is ready
+                            hotels.map((hotel, i) => (
                                 <HotelCard key={i} hotel={hotel} />
                             ))
                         ) }

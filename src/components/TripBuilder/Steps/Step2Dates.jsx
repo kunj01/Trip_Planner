@@ -64,12 +64,12 @@ const Step2Dates = ({ formData, updateFormData, nextStep, prevStep }) => {
     <div className="min-h-screen flex flex-col items-center justify-center px-4 py-12">
       <div className="w-full max-w-4xl">
         {/* Main Heading */}
-        <h1 className="text-4xl md:text-5xl font-bold text-[#00A680] text-center mb-4">
+        <h1 className="text-5xl md:text-6xl font-bold text-gray-800 text-center mb-4">
           When are you going?
         </h1>
         
         {/* Sub-text */}
-        <p className="text-gray-600 text-center mb-8 text-lg">
+        <p className="text-gray-600 text-center mb-12 text-xl max-w-2xl mx-auto">
           Choose a date range, up to 7 days.
         </p>
 
@@ -89,7 +89,7 @@ const Step2Dates = ({ formData, updateFormData, nextStep, prevStep }) => {
             <p className="text-gray-700">
               Selected: {startDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })} -{' '}
               {endDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
-              {days > 0 && <span className="text-[#00A680] font-semibold"> ({days} {days === 1 ? 'day' : 'days'})</span>}
+              {days > 0 && <span className="text-gray-700 font-bold"> ({days} {days === 1 ? 'day' : 'days'})</span>}
             </p>
             {days > 7 && (
               <p className="text-red-500 text-sm mt-2">
@@ -103,28 +103,36 @@ const Step2Dates = ({ formData, updateFormData, nextStep, prevStep }) => {
         <div className="flex justify-between items-center">
           <button
             onClick={prevStep}
-            className="text-[#00A680] font-semibold hover:underline"
+            className="group inline-flex items-center px-6 py-3 text-gray-700 font-semibold hover:text-gray-900 rounded-xl hover:bg-gray-100 transition-all duration-300 transform hover:-translate-x-1"
           >
+            <svg className="w-5 h-5 mr-2 transform group-hover:-translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+            </svg>
             Back
           </button>
           
           <div className="flex gap-4">
             <button
               onClick={handleSkipDates}
-              className="text-[#00A680] font-semibold hover:underline"
+              className="px-6 py-3 text-gray-700 font-semibold hover:text-gray-900 rounded-xl hover:bg-gray-100 transition-all duration-300"
             >
               I don't know my dates yet
             </button>
             <button
               onClick={handleNext}
               disabled={!isValidRange}
-              className={`px-8 py-3 rounded-lg font-semibold text-white transition-colors ${
+              className={`px-10 py-4 rounded-xl font-semibold text-white text-lg transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105 ${
                 isValidRange
-                  ? 'bg-[#00A680] hover:bg-[#008F6B] cursor-pointer'
+                  ? 'bg-gray-700 hover:bg-gray-600 cursor-pointer'
                   : 'bg-gray-300 cursor-not-allowed'
               }`}
             >
-              Next
+              <span className="flex items-center">
+                Continue
+                <svg className="w-5 h-5 ml-2 transform group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                </svg>
+              </span>
             </button>
           </div>
         </div>

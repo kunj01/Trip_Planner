@@ -105,6 +105,7 @@ const TripBuilder = () => {
             formData={formData}
             updateFormData={updateFormData}
             prevStep={prevStep}
+            goToStep={goToStep}
           />
         );
       default:
@@ -113,14 +114,20 @@ const TripBuilder = () => {
   };
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-gray-50">
       {/* Progress Bar */}
       {currentStep < 7 && (
-        <div className="w-full bg-gray-200 h-1">
+        <div className="w-full bg-gray-200 h-1 relative overflow-hidden">
           <div
-            className="bg-[#00A680] h-1 transition-all duration-300"
+            className="h-full bg-gray-700 transition-all duration-500 ease-out shadow-sm"
             style={{ width: `${(currentStep / totalSteps) * 100}%` }}
-          />
+          >
+          </div>
+          <div className="absolute top-0 right-0 h-full flex items-center pr-4">
+            <span className="text-xs font-semibold text-gray-600">
+              {currentStep} / {totalSteps}
+            </span>
+          </div>
         </div>
       )}
 

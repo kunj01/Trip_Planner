@@ -1,16 +1,27 @@
-import { useMemo, useCallback } from 'react';
+import { useMemo, useCallback, useRef, useState, useEffect } from 'react';
 import GoogleMapReact from 'google-map-react';
 import ReactStarsRating from 'react-awesome-stars-rating';
 
 // Map Component with its props destructured
 const Map = ({ places, coordinates, setCoordinates, setBounds }) => {
     const apiKey = import.meta.env.VITE_GOOGLE_MAP_API_KEY;
-    
-    // Default coordinates (New York) if coordinates are not provided
-    const defaultCoords = useMemo(() => {
+    const mapRef = useRef(null);
+    const boundsTimeoutRef = useRef(null);
+    const [mapCenter, setMapCenter] = useState(() => {
+        // Initialize with coordinates if available, otherwise default to New York
         return coordinates && coordinates.lat && coordinates.lng 
             ? coordinates 
             : { lat: 40.7128, lng: -74.0060 };
+    });
+    
+    // Stable default coordinates that never change (to avoid defaultCenter warning)
+    const defaultCoords = useMemo(() => ({ lat: 40.7128, lng: -74.0060 }), []);
+    
+    // Update map center when coordinates change (but don't change defaultCenter)
+    useEffect(() => {
+        if (coordinates && coordinates.lat && coordinates.lng) {
+            setMapCenter(coordinates);
+        }
     }, [coordinates]);
     
     // Memoize places to prevent unnecessary re-renders
@@ -29,17 +40,50 @@ const Map = ({ places, coordinates, setCoordinates, setBounds }) => {
         });
     }, [places]);
     
-    // Memoize onChange handler to prevent unnecessary re-renders
+    // Memoize onChange handler with debouncing to prevent too many API calls
     const handleMapChange = useCallback((e) => {
         // onChange Event sets new Coordinates for Google Map Component
         if (e.center && setCoordinates) {
             setCoordinates({ lat: e.center.lat, lng: e.center.lng });
+            setMapCenter({ lat: e.center.lat, lng: e.center.lng });
         }
-        // onChange Event sets new Bounds for Google Map Component
-        if (e.marginBounds && setBounds) {
-            setBounds({ ne: e.marginBounds.ne, sw: e.marginBounds.sw });
+        
+        // Debounce bounds updates to prevent rate limiting (429 errors)
+        // Clear any existing timeout
+        if (boundsTimeoutRef.current) {
+            clearTimeout(boundsTimeoutRef.current);
         }
+        
+        // Set new timeout to update bounds after 500ms of no changes
+        boundsTimeoutRef.current = setTimeout(() => {
+            // onChange Event sets new Bounds for Google Map Component
+            // google-map-react provides both 'bounds' and 'marginBounds'
+            // marginBounds accounts for the margin prop, bounds is the actual viewport bounds
+            // Both have ne (northeast) and sw (southwest) properties with lat and lng
+            const mapBounds = e.marginBounds || e.bounds;
+            if (mapBounds && setBounds && mapBounds.ne && mapBounds.sw) {
+                setBounds({ 
+                    ne: { 
+                        lat: mapBounds.ne.lat, 
+                        lng: mapBounds.ne.lng 
+                    }, 
+                    sw: { 
+                        lat: mapBounds.sw.lat, 
+                        lng: mapBounds.sw.lng 
+                    } 
+                });
+            }
+        }, 500); // 500ms debounce delay
     }, [setCoordinates, setBounds]);
+    
+    // Cleanup timeout on unmount
+    useEffect(() => {
+        return () => {
+            if (boundsTimeoutRef.current) {
+                clearTimeout(boundsTimeoutRef.current);
+            }
+        };
+    }, []);
     
     if (!apiKey) {
         return (
@@ -60,17 +104,34 @@ const Map = ({ places, coordinates, setCoordinates, setBounds }) => {
                     libraries: ['places']
                 }}
                 defaultCenter={defaultCoords}
-                center={defaultCoords}
+                center={mapCenter}
                 defaultZoom={14}
                 margin={[50,50,50,50]}
                 yesIWantToUseGoogleMapApiInternals
                 onGoogleApiLoaded={({ map, maps }) => {
+                    // Store map reference
+                    mapRef.current = map;
                     // Make sure Google Maps API is available globally for Header component
                     if (!window.google) {
                         window.google = { maps };
                     }
                     // Dispatch event to notify that API is loaded
                     window.dispatchEvent(new Event('google-maps-api-loaded'));
+                    
+                    // Trigger initial bounds update after map loads
+                    if (map && setBounds) {
+                        setTimeout(() => {
+                            const bounds = map.getBounds();
+                            if (bounds) {
+                                const ne = bounds.getNorthEast();
+                                const sw = bounds.getSouthWest();
+                                setBounds({
+                                    ne: { lat: ne.lat(), lng: ne.lng() },
+                                    sw: { lat: sw.lat(), lng: sw.lng() }
+                                });
+                            }
+                        }, 100);
+                    }
                 }}
                 options={{
                     disableDefaultUI: false,

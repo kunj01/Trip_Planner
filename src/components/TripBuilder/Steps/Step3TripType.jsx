@@ -30,27 +30,27 @@ const Step3TripType = ({ formData, updateFormData, nextStep, prevStep }) => {
     <div className="min-h-screen flex flex-col items-center justify-center px-4 py-12">
       <div className="w-full max-w-4xl">
         {/* Main Heading */}
-        <h1 className="text-4xl md:text-5xl font-bold text-[#00A680] text-center mb-4">
+        <h1 className="text-5xl md:text-6xl font-bold text-gray-800 text-center mb-4">
           What kind of trip are you planning?
         </h1>
         
         {/* Sub-text */}
-        <p className="text-gray-600 text-center mb-8 text-lg">
+        <p className="text-gray-600 text-center mb-12 text-xl max-w-2xl mx-auto">
           Select one.
         </p>
 
         {/* Trip Type Options */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-12">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-5 mb-12">
           {tripTypes.map((type) => (
             <button
               key={type.id}
               onClick={() => handleTripTypeSelect(type.id)}
               className={`
-                p-6 rounded-lg border-2 transition-all
+                p-6 rounded-xl border-2 transition-all duration-300 transform hover:scale-105 shadow-sm hover:shadow-lg
                 ${
                   formData.tripType === type.id
-                    ? 'border-[#00A680] bg-[#00A680] text-white'
-                    : 'border-[#00A680] bg-white text-[#00A680] hover:bg-gray-50'
+                    ? 'border-gray-600 bg-gray-700 text-white shadow-lg scale-105'
+                    : 'border-gray-300 bg-white text-gray-700 hover:bg-gray-50 hover:border-gray-400'
                 }
               `}
             >
@@ -101,11 +101,11 @@ const Step3TripType = ({ formData, updateFormData, nextStep, prevStep }) => {
             <button
               onClick={() => handleChildrenChange(true)}
               className={`
-                px-8 py-3 rounded-lg border-2 font-semibold transition-all
+                px-8 py-3 rounded-xl border-2 font-semibold transition-all duration-300 transform hover:scale-105 shadow-sm hover:shadow-md
                 ${
                   formData.withChildren
-                    ? 'border-[#00A680] bg-[#00A680] text-white'
-                    : 'border-[#00A680] bg-white text-[#00A680] hover:bg-gray-50'
+                    ? 'border-gray-600 bg-gray-700 text-white shadow-md'
+                    : 'border-gray-300 bg-white text-gray-700 hover:bg-gray-50 hover:border-gray-400'
                 }
               `}
             >
@@ -114,11 +114,11 @@ const Step3TripType = ({ formData, updateFormData, nextStep, prevStep }) => {
             <button
               onClick={() => handleChildrenChange(false)}
               className={`
-                px-8 py-3 rounded-lg border-2 font-semibold transition-all
+                px-8 py-3 rounded-xl border-2 font-semibold transition-all duration-300 transform hover:scale-105 shadow-sm hover:shadow-md
                 ${
                   !formData.withChildren
-                    ? 'border-[#00A680] bg-[#00A680] text-white'
-                    : 'border-[#00A680] bg-white text-[#00A680] hover:bg-gray-50'
+                    ? 'border-gray-600 bg-gray-700 text-white shadow-md'
+                    : 'border-gray-300 bg-white text-gray-700 hover:bg-gray-50 hover:border-gray-400'
                 }
               `}
             >
@@ -151,11 +151,11 @@ const Step3TripType = ({ formData, updateFormData, nextStep, prevStep }) => {
             <button
               onClick={() => handlePetsChange(true)}
               className={`
-                px-8 py-3 rounded-lg border-2 font-semibold transition-all
+                px-8 py-3 rounded-xl border-2 font-bold transition-all duration-300 transform hover:scale-105
                 ${
                   formData.withPets
-                    ? 'border-[#00A680] bg-[#00A680] text-white'
-                    : 'border-[#00A680] bg-white text-[#00A680] hover:bg-gray-50'
+                    ? 'border-indigo-600 bg-gradient-to-r from-indigo-600 to-purple-600 text-white shadow-lg'
+                    : 'border-indigo-200 bg-white text-indigo-600 hover:bg-indigo-50 hover:border-indigo-400'
                 }
               `}
             >
@@ -164,11 +164,11 @@ const Step3TripType = ({ formData, updateFormData, nextStep, prevStep }) => {
             <button
               onClick={() => handlePetsChange(false)}
               className={`
-                px-8 py-3 rounded-lg border-2 font-semibold transition-all
+                px-8 py-3 rounded-xl border-2 font-bold transition-all duration-300 transform hover:scale-105
                 ${
                   !formData.withPets
-                    ? 'border-[#00A680] bg-[#00A680] text-white'
-                    : 'border-[#00A680] bg-white text-[#00A680] hover:bg-gray-50'
+                    ? 'border-indigo-600 bg-gradient-to-r from-indigo-600 to-purple-600 text-white shadow-lg'
+                    : 'border-indigo-200 bg-white text-indigo-600 hover:bg-indigo-50 hover:border-indigo-400'
                 }
               `}
             >
@@ -181,24 +181,29 @@ const Step3TripType = ({ formData, updateFormData, nextStep, prevStep }) => {
         <div className="flex justify-between items-center">
           <button
             onClick={prevStep}
-            className="text-[#00A680] font-semibold hover:underline"
+            className="group inline-flex items-center px-6 py-3 text-gray-700 font-semibold hover:text-gray-900 rounded-xl hover:bg-gray-100 transition-all duration-300 transform hover:-translate-x-1"
           >
+            <svg className="w-5 h-5 mr-2 transform group-hover:-translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+            </svg>
             Back
           </button>
           
           <button
             onClick={handleNext}
             disabled={!formData.tripType}
-            className={`
-              px-8 py-3 rounded-lg font-semibold text-white transition-colors
-              ${
-                formData.tripType
-                  ? 'bg-[#00A680] hover:bg-[#008F6B] cursor-pointer'
-                  : 'bg-gray-300 cursor-not-allowed'
-              }
-            `}
+            className={`px-10 py-4 rounded-xl font-semibold text-white text-lg transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105 ${
+              formData.tripType
+                ? 'bg-gray-700 hover:bg-gray-600 cursor-pointer'
+                : 'bg-gray-300 cursor-not-allowed'
+            }`}
           >
-            Next
+            <span className="flex items-center">
+              Continue
+              <svg className="w-5 h-5 ml-2 transform group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+              </svg>
+            </span>
           </button>
         </div>
       </div>

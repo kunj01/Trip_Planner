@@ -70,22 +70,22 @@ const Step1Destination = ({ formData, updateFormData, nextStep }) => {
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center px-4 py-12">
-      <div className="w-full max-w-3xl">
+      <div className="w-full max-w-4xl">
         {/* Main Heading */}
-        <h1 className="text-4xl md:text-5xl font-bold text-[#00A680] text-center mb-4">
+        <h1 className="text-5xl md:text-6xl font-bold text-gray-900 text-center mb-4">
           Where do you want to go?
         </h1>
         
         {/* Sub-text */}
-        <p className="text-gray-600 text-center mb-8 text-lg">
-          You'll get custom recs you can save and turn into an itinerary.
+        <p className="text-gray-600 text-center mb-12 text-xl max-w-2xl mx-auto">
+          Discover personalized recommendations and create your perfect travel itinerary
         </p>
 
         {/* Search Input */}
         <div className="relative mb-12">
           <div className="relative">
             <svg
-              className="absolute left-4 top-1/2 transform -translate-y-1/2 w-6 h-6 text-gray-400"
+              className="absolute left-6 top-1/2 transform -translate-y-1/2 w-6 h-6 text-gray-400"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -97,22 +97,22 @@ const Step1Destination = ({ formData, updateFormData, nextStep }) => {
               value={searchQuery}
               onChange={handleSearch}
               onFocus={() => searchQuery.length > 2 && setShowResults(true)}
-              placeholder="Choose a city or town"
-              className="w-full pl-14 pr-4 py-4 text-lg border-2 border-[#00A680] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#00A680] focus:border-transparent"
+              placeholder="Search for a destination..."
+              className="w-full pl-16 pr-6 py-5 text-lg border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-400 focus:border-gray-500 bg-white"
             />
           </div>
 
           {/* Search Results Dropdown */}
           {showResults && searchResults.length > 0 && (
-            <div className="absolute z-10 w-full mt-2 bg-white border border-gray-200 rounded-lg shadow-lg max-h-60 overflow-y-auto">
+            <div className="absolute z-10 w-full mt-3 bg-white border border-gray-200 rounded-2xl shadow-2xl max-h-60 overflow-y-auto backdrop-blur-sm">
               {searchResults.map((result) => (
                 <div
                   key={result.place_id}
-                  className="px-4 py-3 hover:bg-gray-100 cursor-pointer border-b border-gray-100 last:border-b-0"
+                  className="px-6 py-4 hover:bg-gray-50 cursor-pointer border-b border-gray-100 last:border-b-0 transition-colors"
                   onClick={() => selectDestination(result)}
                 >
-                  <div className="font-medium text-gray-900">{result.name}</div>
-                  <div className="text-sm text-gray-500">{result.formatted_address}</div>
+                  <div className="font-semibold text-gray-900">{result.name}</div>
+                  <div className="text-sm text-gray-500 mt-1">{result.formatted_address}</div>
                 </div>
               ))}
             </div>
@@ -120,32 +120,33 @@ const Step1Destination = ({ formData, updateFormData, nextStep }) => {
         </div>
 
         {/* Popular Destinations */}
-        <div className="mb-8">
-          <h2 className="text-center text-gray-700 text-lg mb-6">
-            Or get started with a popular destination
+        <div className="mb-12">
+          <h2 className="text-center text-gray-700 text-xl font-semibold mb-8">
+            Or explore popular destinations
           </h2>
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-5">
             {popularDestinations.map((dest, index) => (
               <div
                 key={index}
                 onClick={() => handlePopularDestinationClick(dest)}
-                className={`cursor-pointer rounded-lg overflow-hidden shadow-md hover:shadow-xl transition-shadow ${
-                  formData.destination === dest.name ? 'ring-2 ring-[#00A680]' : ''
+                className={`group cursor-pointer rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-all duration-300 ${
+                  formData.destination === dest.name ? 'ring-2 ring-gray-900 ring-offset-2' : ''
                 }`}
               >
-                <div className="aspect-square relative">
+                <div className="aspect-square relative overflow-hidden">
                   <img
                     src={dest.image}
                     alt={dest.name}
-                    className="w-full h-full object-cover"
+                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
                     onError={(e) => {
                       e.target.src = 'https://via.placeholder.com/300x300?text=' + encodeURIComponent(dest.name);
                     }}
                   />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
                 </div>
-                <div className="p-3 bg-white">
-                  <p className="font-semibold text-gray-900 text-sm">{dest.name}</p>
-                  <p className="text-xs text-gray-600">{dest.country}</p>
+                <div className="p-4 bg-white">
+                  <p className="font-bold text-gray-900 text-sm">{dest.name}</p>
+                  <p className="text-xs text-gray-600 mt-1">{dest.country}</p>
                 </div>
               </div>
             ))}
@@ -157,13 +158,18 @@ const Step1Destination = ({ formData, updateFormData, nextStep }) => {
           <button
             onClick={handleNext}
             disabled={!formData.destination}
-            className={`px-8 py-3 rounded-lg font-semibold text-white transition-colors ${
+            className={`px-10 py-4 rounded-xl font-semibold text-white text-lg transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105 ${
               formData.destination
-                ? 'bg-[#00A680] hover:bg-[#008F6B] cursor-pointer'
+                ? 'bg-gray-700 hover:bg-gray-600 cursor-pointer'
                 : 'bg-gray-300 cursor-not-allowed'
             }`}
           >
-            Next
+            <span className="relative z-10 flex items-center">
+              Continue
+              <svg className="w-5 h-5 ml-2 transform group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+              </svg>
+            </span>
           </button>
         </div>
       </div>

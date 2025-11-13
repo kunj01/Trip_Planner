@@ -68,7 +68,8 @@ export const getPlacesByLatLng = async (type, lat, lng, params, source) => {
         'X-RapidAPI-Host': 'travel-advisor.p.rapidapi.com',
         'X-RapidAPI-Key': apiKey
       },
-      cancelToken: source.token
+      cancelToken: source.token,
+      timeout: 30000 // 30 second timeout
     });
 
     // Data is returned once resolved
@@ -77,7 +78,22 @@ export const getPlacesByLatLng = async (type, lat, lng, params, source) => {
     if (axios.isCancel(error)){
       return [];
     } else {
-      console.error(`Error fetching ${type} by lat/lng:`, error.response?.status || error.message);
+      // Better error logging
+      const status = error.response?.status;
+      const statusText = error.response?.statusText;
+      const message = error.message;
+      
+      if (status === 429) {
+        console.error(`Rate limit exceeded for ${type}. Please try again later.`);
+      } else if (status === 401 || status === 403) {
+        console.error(`API key authentication failed for ${type}. Please check your VITE_TRAVEL_API_KEY.`);
+      } else if (status === 502 || status === 503 || status === 504) {
+        console.error(`Server error (${status}) fetching ${type}. The API server may be temporarily unavailable.`);
+      } else if (error.code === 'ECONNABORTED' || message.includes('timeout')) {
+        console.error(`Request timeout fetching ${type}. The server took too long to respond.`);
+      } else {
+        console.error(`Error fetching ${type} by lat/lng:`, status ? `${status} ${statusText}` : message);
+      }
       return [];
     }
   }
