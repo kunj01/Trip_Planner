@@ -11,6 +11,7 @@
     "@react-google-maps/api": "^2.7.0",
     "axios": "^0.26.1",
     "google-map-react": "^2.1.10",
+    "jspdf": "^3.0.3",
     "moment": "^2.29.2",
     "react": "^17.0.2",
     "react-awesome-stars-rating": "^0.10.0",

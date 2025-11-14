@@ -1,13 +1,18 @@
 import React, { useState, useMemo } from 'react';
 import { useHistory } from 'react-router-dom';
 import moment from 'moment';
+import { generateItineraryPDF } from '../../../utils/pdfGenerator';
+import { itineraryApiService } from '../../../api/itineraryApiService';
+import { useAuth } from '../../../context/AuthContext';
 
 const Step7Itinerary = ({ formData, updateFormData, prevStep, goToStep }) => {
   const history = useHistory();
+  const { isAuthenticated } = useAuth();
   const [selectedDay, setSelectedDay] = useState(0);
   const [activeTab, setActiveTab] = useState('itinerary'); // 'saves', 'itinerary', 'foryou'
   const [showMenuFor, setShowMenuFor] = useState(null); // Track which item's menu is open
   const [bookmarkedDays, setBookmarkedDays] = useState(new Set());
+  const [saving, setSaving] = useState(false);
   const itinerary = formData.itinerary || {};
   const days = itinerary.days || [];
   const selectedRecommendations = formData.selectedRecommendations || [];
@@ -65,35 +70,43 @@ const Step7Itinerary = ({ formData, updateFormData, prevStep, goToStep }) => {
     return '🍴';
   };
 
-  const handleSaveTrip = () => {
+  const handleSaveTrip = async () => {
+    if (!isAuthenticated) {
+      alert('Please login to save your trip itinerary');
+      history.push('/login');
+      return;
+    }
+
+    setSaving(true);
     try {
-      // Prepare trip data to save
-      const tripData = {
+      // Prepare trip data to save to database
+      const itineraryData = {
         destination: formData.destination,
+        title: `Trip to ${formData.destination}`,
         startDate: formData.startDate,
         endDate: formData.endDate,
         tripType: formData.tripType,
+        budget: formData.budget || 'moderate',
+        activityLevel: formData.activityLevel || 'moderate',
+        travelGroup: formData.travelGroup || 'solo',
+        interests: formData.interests || [],
         itinerary: itinerary,
         selectedRecommendations: selectedRecommendations,
-        savedAt: new Date().toISOString(),
       };
 
-      // Get existing saved trips from localStorage
-      const savedTrips = JSON.parse(localStorage.getItem('savedTrips') || '[]');
+      const response = await itineraryApiService.saveItinerary(itineraryData);
       
-      // Add new trip
-      savedTrips.push(tripData);
-      
-      // Save back to localStorage
-      localStorage.setItem('savedTrips', JSON.stringify(savedTrips));
-      
-      // Show success message
-      alert(`Trip to ${formData.destination} has been saved successfully!`);
-      
-      console.log('Trip saved:', tripData);
+      if (response.success) {
+        alert(`Trip to ${formData.destination} has been saved successfully!`);
+        console.log('Trip saved to database:', response.data.itinerary);
+      } else {
+        throw new Error(response.message || 'Failed to save trip');
+      }
     } catch (error) {
       console.error('Error saving trip:', error);
-      alert('Failed to save trip. Please try again.');
+      alert(error.message || 'Failed to save trip. Please try again.');
+    } finally {
+      setSaving(false);
     }
   };
 
@@ -207,83 +220,26 @@ const Step7Itinerary = ({ formData, updateFormData, prevStep, goToStep }) => {
 
   const handleDownloadItinerary = () => {
     try {
-      // Create a formatted text version of the itinerary
-      let content = `ITINERARY: ${formData.destination}\n`;
-      content += `Destination: ${formData.destination}\n`;
-      if (formData.startDate && formData.endDate) {
-        const start = moment(formData.startDate);
-        const end = moment(formData.endDate);
-        content += `Dates: ${start.format('MMM DD, YYYY')} - ${end.format('MMM DD, YYYY')}\n`;
-      }
-      content += `Duration: ${days.length} ${days.length === 1 ? 'day' : 'days'}\n`;
-      if (formData.tripType) {
-        content += `Trip Type: ${formData.tripType}\n`;
-      }
-      content += '\n' + '='.repeat(50) + '\n\n';
+      // Prepare itinerary data for PDF
+      const pdfData = {
+        destination: formData.destination,
+        title: `Trip to ${formData.destination}`,
+        startDate: formData.startDate,
+        endDate: formData.endDate,
+        tripType: formData.tripType,
+        itinerary: {
+          days: days.map(day => ({
+            ...day,
+            activities: day.activities?.filter(a => !a.place_id || selectedRecommendations.includes(a.place_id)) || [],
+            meals: day.meals?.filter(m => !m.place_id || selectedRecommendations.includes(m.place_id)) || [],
+          })),
+          tips: itinerary.tips || [],
+          totalCost: itinerary.totalCost || '',
+        },
+      };
 
-      days.forEach((day, index) => {
-        content += `DAY ${index + 1}: ${day.title || `Day ${index + 1}`}\n`;
-        if (day.description) {
-          content += `${day.description}\n`;
-        }
-        content += '-'.repeat(50) + '\n\n';
-
-        if (day.activities && day.activities.length > 0) {
-          content += 'ACTIVITIES:\n';
-          day.activities.forEach((activity) => {
-            if (!activity.place_id || selectedRecommendations.includes(activity.place_id)) {
-              content += `  ${activity.time}: ${activity.name}\n`;
-              if (activity.description) content += `    ${activity.description}\n`;
-              if (activity.location) content += `    Location: ${activity.location}\n`;
-              if (activity.cost) content += `    Cost: ${activity.cost}\n`;
-              content += '\n';
-            }
-          });
-        }
-
-        if (day.meals && day.meals.length > 0) {
-          content += 'MEALS:\n';
-          day.meals.forEach((meal) => {
-            if (!meal.place_id || selectedRecommendations.includes(meal.place_id)) {
-              content += `  ${meal.type}: ${meal.restaurant}\n`;
-              if (meal.cuisine) content += `    Cuisine: ${meal.cuisine}\n`;
-              if (meal.location) content += `    Location: ${meal.location}\n`;
-              content += '\n';
-            }
-          });
-        }
-
-        if (day.transportation) {
-          content += `Transportation: ${day.transportation}\n`;
-        }
-
-        content += '\n' + '='.repeat(50) + '\n\n';
-      });
-
-      if (itinerary.tips && itinerary.tips.length > 0) {
-        content += 'TRAVEL TIPS:\n';
-        itinerary.tips.forEach((tip, index) => {
-          content += `${index + 1}. ${tip}\n`;
-        });
-        content += '\n';
-      }
-
-      if (itinerary.totalCost) {
-        content += `Estimated Total Cost: ${itinerary.totalCost}\n`;
-      }
-
-      // Create and download file
-      const blob = new Blob([content], { type: 'text/plain' });
-      const url = window.URL.createObjectURL(blob);
-      const link = document.createElement('a');
-      link.href = url;
-      link.download = `${formData.destination.replace(/\s+/g, '_')}_Itinerary.txt`;
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-      window.URL.revokeObjectURL(url);
-
-      alert('Itinerary downloaded successfully!');
+      generateItineraryPDF(pdfData);
+      alert('Itinerary PDF downloaded successfully!');
     } catch (error) {
       console.error('Error downloading itinerary:', error);
       alert('Failed to download itinerary. Please try again.');
@@ -407,9 +363,16 @@ const Step7Itinerary = ({ formData, updateFormData, prevStep, goToStep }) => {
                 <div className="absolute left-6 top-0 bottom-0 w-1 bg-gray-300 rounded-full" />
 
                 {/* Activities */}
-                {selectedDayData.activities?.filter(activity => 
-                  !activity.place_id || selectedRecommendations.includes(activity.place_id)
-                ).map((activity, index) => (
+                {selectedDayData.activities && selectedDayData.activities.length > 0 ? (
+                  (() => {
+                    const filteredActivities = selectedDayData.activities.filter(activity => 
+                      !activity.place_id || selectedRecommendations.includes(activity.place_id)
+                    );
+                    // If filter returns empty but activities exist, show all activities (fallback)
+                    const activitiesToShow = filteredActivities.length > 0 
+                      ? filteredActivities 
+                      : selectedDayData.activities;
+                    return activitiesToShow.map((activity, index) => (
                   <div key={index} className="relative mb-6 pl-12">
                     {/* Timeline Dot */}
                     <div className="absolute left-4 top-4 w-8 h-8 bg-gray-700 rounded-full border-4 border-white z-10 flex items-center justify-center shadow-md">
@@ -509,7 +472,13 @@ const Step7Itinerary = ({ formData, updateFormData, prevStep, goToStep }) => {
                       </div>
                     </div>
                   </div>
-                ))}
+                    ));
+                  })()
+                ) : (
+                  <div className="text-center py-8 text-gray-500">
+                    <p>No activities planned for this day.</p>
+                  </div>
+                )}
 
                 {/* Meals */}
                 {selectedDayData.meals?.filter(meal => 
@@ -646,9 +615,24 @@ const Step7Itinerary = ({ formData, updateFormData, prevStep, goToStep }) => {
               </button>
               <button 
                 onClick={handleSaveTrip}
-                className="px-8 py-3 border border-gray-300 text-gray-700 rounded-lg font-medium hover:bg-gray-50 transition-all duration-200"
+                disabled={saving}
+                className={`px-8 py-3 border border-gray-300 text-gray-700 rounded-lg font-medium transition-all duration-200 ${
+                  saving 
+                    ? 'bg-gray-100 cursor-not-allowed opacity-50' 
+                    : 'hover:bg-gray-50'
+                }`}
               >
-                Save Trip
+                {saving ? (
+                  <span className="flex items-center">
+                    <svg className="animate-spin -ml-1 mr-2 h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                    Saving...
+                  </span>
+                ) : (
+                  'Save Trip'
+                )}
               </button>
               <button 
                 onClick={handleShareTrip}

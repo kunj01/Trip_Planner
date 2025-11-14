@@ -1,19 +1,34 @@
-import { useState } from "react";
+import { useState, useContext } from "react";
 import wheretoImg from '../img/whereto.webp';
 import { useHistory } from "react-router-dom";
+import { MainContext } from "../context/MainContext";
+import PlaceSearchModal from "./PlaceSearchModal";
 
 const WhereTo = () => {
     const [term, setTerm] = useState('');
+    const [showModal, setShowModal] = useState(false);
     const history = useHistory();
+    const { setSearchedLocation } = useContext(MainContext);
 
     // Form submit handler function - fires on submit
     const handleSubmit = (e) => {
         // Prevent form from reloading page
         e.preventDefault();
 
+        const trimmedTerm = term.trim();
+        if (trimmedTerm) {
+            // Update term to trimmed version
+            setTerm(trimmedTerm);
+            // Show modal with place details
+            setShowModal(true);
+        }
+    }
+
+    const handleSelectLocation = (location) => {
+        // Store the searched location in context
+        setSearchedLocation(location);
         // Route to the search Result page
-        // ...passing the form search 'term' state value as url parameter to be received on search result component
-        history.push(`/search?location=${term}`);
+        history.push(`/search?location=${location.name}`);
     }
 
     return ( 
@@ -38,6 +53,14 @@ const WhereTo = () => {
                 </form>
             </div>
             {/* --- */}
+
+            {/* Place Search Modal */}
+            <PlaceSearchModal
+                searchTerm={term}
+                isOpen={showModal}
+                onClose={() => setShowModal(false)}
+                onSelectLocation={handleSelectLocation}
+            />
         </div>
      );
 }

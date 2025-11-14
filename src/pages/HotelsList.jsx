@@ -28,7 +28,7 @@ const Input = ({ type, name, value, valueInline, handleChange, handleChangeInlin
 
 const HotelsList = () => {
     // Destructuring the neccessary states from the main context
-    const { coordinates, isLoading, setIsLoading, setType } = useContext(MainContext);
+    const { coordinates, searchedLocation, isLoading, setIsLoading, setType } = useContext(MainContext);
     const [hotels, setHotels] = useState();
     const [guestsToggle, setGuestsToggle] = useState(false);
     const [error, setError] = useState(null);
@@ -70,7 +70,10 @@ const HotelsList = () => {
 
     // Effect to fetch places for component from the getPlacesByLatLng endpoint and effect is reran on change of 'coordinates' or 'filterParams' state values
     useEffect(() => {
-        if (!coordinates.lat || !coordinates.lng) {
+        // Use searched location if available, otherwise use current coordinates
+        const locationToUse = searchedLocation || coordinates;
+        
+        if (!locationToUse.lat || !locationToUse.lng) {
             setIsLoading(false);
             return;
         }
@@ -82,7 +85,7 @@ const HotelsList = () => {
         setIsLoading(true);
 
         // Calling on the getPlacesByLatLng endpoint passing in the 'hotels' as place type, coordinates (longitude and latitude), a limit parameter and source for error handling
-        getPlacesByLatLng('hotels', coordinates.lat, coordinates.lng, {...filterParams}, source)
+        getPlacesByLatLng('hotels', locationToUse.lat, locationToUse.lng, {...filterParams}, source)
             .then(data => {
                 if (isMounted) {
                     // Data is received and set to 'hotels' state filtering out items without the 'name' property
@@ -128,7 +131,7 @@ const HotelsList = () => {
             isMounted = false;
             source.cancel();
         }
-    }, [coordinates, filterParams, setIsLoading, retryCount])
+    }, [coordinates, searchedLocation, filterParams, setIsLoading, retryCount])
 
     return ( 
        <>
@@ -139,8 +142,11 @@ const HotelsList = () => {
             <div className="pb-4">
                 <div className="container mx-auto text-center my-10">
                     <h1 className="font-semibold text-lg md:text-3xl">
-                        Hotels and Places to stay
+                        {searchedLocation ? `Hotels in ${searchedLocation.name}` : 'Hotels and Places to stay'}
                     </h1>
+                    {searchedLocation && (
+                        <p className="text-gray-600 mt-2">Showing results for {searchedLocation.name}</p>
+                    )}
                 </div>
                 
                 {/* Check In/Out and Guests Filter */}

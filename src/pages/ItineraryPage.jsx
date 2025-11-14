@@ -210,8 +210,8 @@ const ItineraryPage = () => {
               {savedItineraries.map((itinerary) => (
                 <div key={itinerary._id} className="group bg-white rounded-xl shadow-sm hover:shadow-lg transition-all duration-300 overflow-hidden border border-gray-200 transform hover:-translate-y-1">
                   <div 
-                    onClick={() => handleViewItinerary(itinerary._id)}
-                    className="cursor-pointer"
+                    onClick={() => !loadingItinerary && handleViewItinerary(itinerary._id)}
+                    className={`${loadingItinerary ? 'cursor-wait' : 'cursor-pointer'}`}
                   >
                     <div className="h-32 bg-gray-700 relative overflow-hidden">
                       <div className="absolute inset-0 bg-black opacity-0 group-hover:opacity-10 transition-opacity"></div>
@@ -414,6 +414,16 @@ const ItineraryPage = () => {
       </div>
 
       {/* Itinerary Modal */}
+      {loadingItinerary && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+          <div className="bg-white rounded-2xl p-8 shadow-2xl">
+            <div className="flex flex-col items-center">
+              <div className="animate-spin rounded-full h-12 w-12 border-4 border-gray-200 border-t-gray-700 mb-4"></div>
+              <p className="text-gray-700 font-medium">Loading itinerary...</p>
+            </div>
+          </div>
+        </div>
+      )}
       <ItineraryModal 
         itinerary={selectedItinerary}
         isOpen={isModalOpen}

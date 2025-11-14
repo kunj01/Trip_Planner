@@ -104,9 +104,9 @@ const Navbar = ({ sticky, border }) => {
 
                     {/* Link to Itinerary Generator */}
                     <Link to={"/itinerary"}>
-                        <li className="rounded-full bg-gradient-to-r from-blue-600 to-blue-700 text-white py-2.5 px-5 cursor-pointer hover:from-blue-700 hover:to-blue-800 transition-all duration-200 shadow-md hover:shadow-lg hover:scale-105 transform">
-                            <p className="flex font-semibold items-center">
-                                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+                        <li className="rounded-full bg-gradient-to-r from-blue-600 to-blue-700 text-white py-2.5 px-6 cursor-pointer hover:from-blue-700 hover:to-blue-800 transition-all duration-200 shadow-md hover:shadow-lg hover:scale-105 transform whitespace-nowrap">
+                            <p className="flex font-semibold items-center text-sm">
+                                <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-2" viewBox="0 0 20 20" fill="currentColor">
                                     <path fillRule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clipRule="evenodd" />
                                 </svg>
                                 Itinerary Generator
@@ -117,9 +117,9 @@ const Navbar = ({ sticky, border }) => {
 
                     {/* Link to Map View */}
                     <Link to={"/map"}>
-                        <li className="rounded-full bg-gradient-to-r from-gray-900 to-black text-white py-2.5 px-5 cursor-pointer hover:from-gray-800 hover:to-gray-900 transition-all duration-200 shadow-md hover:shadow-lg hover:scale-105 transform">
-                            <p className="flex font-semibold items-center">
-                                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+                        <li className="rounded-full bg-gradient-to-r from-gray-900 to-black text-white py-2.5 px-6 cursor-pointer hover:from-gray-800 hover:to-gray-900 transition-all duration-200 shadow-md hover:shadow-lg hover:scale-105 transform whitespace-nowrap">
+                            <p className="flex font-semibold items-center text-sm">
+                                <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-2" viewBox="0 0 20 20" fill="currentColor">
                                     <path fillRule="evenodd" d="M12 1.586l-4 4v12.828l4-4V1.586zM3.707 3.293A1 1 0 002 4v10a1 1 0 00.293.707L6 18.414V5.586L3.707 3.293zM17.707 5.293L14 1.586v12.828l2.293 2.293A1 1 0 0018 16V6a1 1 0 00-.293-.707z" clipRule="evenodd" />
                                 </svg>
                                 Map View
@@ -134,11 +134,11 @@ const Navbar = ({ sticky, border }) => {
                             // Logged in - Profile Dropdown
                             <button
                                 onClick={() => setIsProfileDropdownOpen(!isProfileDropdownOpen)}
-                                className="flex items-center space-x-2 rounded-full bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 text-white py-2.5 px-5 hover:from-blue-700 hover:via-indigo-700 hover:to-purple-700 transition-all duration-200 shadow-lg hover:shadow-xl hover:scale-105 transform"
+                                className="flex items-center space-x-2 rounded-full bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 text-white py-2.5 px-6 hover:from-blue-700 hover:via-indigo-700 hover:to-purple-700 transition-all duration-200 shadow-lg hover:shadow-xl hover:scale-105 transform whitespace-nowrap"
                             >
-                                <div className="w-8 h-8 rounded-full bg-white bg-opacity-30 flex items-center justify-center backdrop-blur-sm">
+                                <div className="w-7 h-7 rounded-full bg-white bg-opacity-30 flex items-center justify-center backdrop-blur-sm">
                                     <svg
-                                        className="w-5 h-5"
+                                        className="w-4 h-4"
                                         xmlns="http://www.w3.org/2000/svg"
                                         viewBox="0 0 20 20"
                                         fill="currentColor"
@@ -150,7 +150,7 @@ const Navbar = ({ sticky, border }) => {
                                         />
                                     </svg>
                                 </div>
-                                <span className="font-semibold hidden lg:block">{user.fullName}</span>
+                                <span className="font-semibold text-sm hidden lg:block">{user.fullName}</span>
                                 <svg
                                     className={`w-4 h-4 transition-transform duration-200 ${isProfileDropdownOpen ? 'rotate-180' : ''}`}
                                     xmlns="http://www.w3.org/2000/svg"
@@ -168,10 +168,10 @@ const Navbar = ({ sticky, border }) => {
                             // Not logged in - Login/Signup Button
                             <button
                                 onClick={() => setIsProfileDropdownOpen(!isProfileDropdownOpen)}
-                                className="flex items-center space-x-2.5 rounded-full border-2 border-gray-300 hover:border-blue-500 bg-white text-gray-700 hover:text-blue-600 py-2.5 px-5 transition-all duration-200 hover:shadow-lg hover:scale-105 transform font-semibold"
+                                className="flex items-center space-x-2 rounded-full border-2 border-gray-300 hover:border-blue-500 bg-white text-gray-700 hover:text-blue-600 py-2.5 px-6 transition-all duration-200 hover:shadow-lg hover:scale-105 transform font-semibold whitespace-nowrap"
                             >
                                 <svg
-                                    className="w-5 h-5"
+                                    className="w-4 h-4"
                                     xmlns="http://www.w3.org/2000/svg"
                                     viewBox="0 0 20 20"
                                     fill="currentColor"
@@ -182,7 +182,7 @@ const Navbar = ({ sticky, border }) => {
                                         clipRule="evenodd"
                                     />
                                 </svg>
-                                <span className="hidden lg:block">Account</span>
+                                <span className="text-sm hidden lg:block">Account</span>
                                 <svg
                                     className={`w-4 h-4 transition-transform duration-200 ${isProfileDropdownOpen ? 'rotate-180' : ''}`}
                                     xmlns="http://www.w3.org/2000/svg"
@@ -393,8 +393,8 @@ const Navbar = ({ sticky, border }) => {
 
                     {/* Link to Itinerary Generator */}
                     <Link to={"/itinerary"} onClick={() => setIsMenuToggled(false)}>
-                        <p className="flex font-semibold items-center cursor-pointer px-6 py-3.5 bg-gradient-to-r from-blue-600 to-blue-700 text-white hover:from-blue-700 hover:to-blue-800 transition-colors">
-                            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-3" viewBox="0 0 20 20" fill="currentColor">
+                        <p className="flex font-semibold items-center cursor-pointer px-6 py-3.5 bg-gradient-to-r from-blue-600 to-blue-700 text-white hover:from-blue-700 hover:to-blue-800 transition-colors text-sm">
+                            <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-3" viewBox="0 0 20 20" fill="currentColor">
                                 <path fillRule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clipRule="evenodd" />
                             </svg>
                             Itinerary Generator
@@ -404,8 +404,8 @@ const Navbar = ({ sticky, border }) => {
 
                     {/* Lint to Mapview Route */}
                     <Link to={"/map"} onClick={() => setIsMenuToggled(false)}>
-                        <p className="flex font-semibold items-center cursor-pointer px-6 py-3.5 bg-gradient-to-r from-gray-900 to-black text-white hover:from-gray-800 hover:to-gray-900 transition-colors">
-                            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-3" viewBox="0 0 20 20" fill="currentColor">
+                        <p className="flex font-semibold items-center cursor-pointer px-6 py-3.5 bg-gradient-to-r from-gray-900 to-black text-white hover:from-gray-800 hover:to-gray-900 transition-colors text-sm">
+                            <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-3" viewBox="0 0 20 20" fill="currentColor">
                                 <path fillRule="evenodd" d="M12 1.586l-4 4v12.828l4-4V1.586zM3.707 3.293A1 1 0 002 4v10a1 1 0 00.293.707L6 18.414V5.586L3.707 3.293zM17.707 5.293L14 1.586v12.828l2.293 2.293A1 1 0 0018 16V6a1 1 0 00-.293-.707z" clipRule="evenodd" />
                             </svg>
                             Switch to Map View

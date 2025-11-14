@@ -45,6 +45,27 @@ const Signup = () => {
     e.preventDefault();
     setErrors({});
     setGeneralError("");
+    
+    // Client-side validation
+    const validationErrors = {};
+    
+    if (formData.password !== formData.confirmPassword) {
+      validationErrors.confirmPassword = "Passwords do not match";
+    }
+    
+    if (formData.password.length < 8) {
+      validationErrors.password = "Password must be at least 8 characters";
+    }
+    
+    if (formData.fullName.trim().length < 3) {
+      validationErrors.fullName = "Full name must be at least 3 characters";
+    }
+    
+    if (Object.keys(validationErrors).length > 0) {
+      setErrors(validationErrors);
+      return;
+    }
+    
     setIsLoading(true);
 
     try {

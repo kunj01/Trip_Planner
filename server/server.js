@@ -4,6 +4,7 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import authRoutes from './routes/auth.js';
 import itineraryRoutes from './routes/itineraries.js';
+import bucketListRoutes from './routes/bucketList.js';
 
 // Load environment variables
 dotenv.config();
@@ -18,6 +19,7 @@ app.use(express.urlencoded({ extended: true }));
 // Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/itineraries', itineraryRoutes);
+app.use('/api/bucketlist', bucketListRoutes);
 
 // Health check route
 app.get('/api/health', (req, res) => {

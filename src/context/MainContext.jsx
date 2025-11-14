@@ -15,6 +15,7 @@ export const MainContextProvider = ({ children }) => {
     const [restaurants, setRestaurants] = useState();
     const [hotels, setHotels] = useState();
     const [attractions, setAttractions] = useState();
+    const [searchedLocation, setSearchedLocation] = useState(null); // Store searched location { name, lat, lng, location_id }
 
     // Get Current User Location
     useEffect(() => {
@@ -199,7 +200,7 @@ export const MainContextProvider = ({ children }) => {
 
     return (
         // Passing State value through main context to children for access
-        <MainContext.Provider value={{ places, setPlaces, coordinates, setCoordinates, bounds, setBounds, rating, setRating, type, setType, isLoading, setIsLoading, filteredPlaces, attractions, restaurants, hotels }}>
+        <MainContext.Provider value={{ places, setPlaces, coordinates, setCoordinates, bounds, setBounds, rating, setRating, type, setType, isLoading, setIsLoading, filteredPlaces, attractions, restaurants, hotels, searchedLocation, setSearchedLocation }}>
             { children }
         </MainContext.Provider>
     )

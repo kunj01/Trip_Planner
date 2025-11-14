@@ -44,3 +44,24 @@ body {
     -ms-overflow-style: none;  /* IE and Edge */
     scrollbar-width: none;  /* Firefox */
 }
+
+/* Prevent hover flashing during clicks */
+* {
+    -webkit-tap-highlight-color: transparent;
+}
+
+/* Remove default focus outline but keep accessibility */
+*:focus {
+    outline: none;
+}
+
+*:focus-visible {
+    outline: 2px solid #3b82f6;
+    outline-offset: 2px;
+}
+
+/* Disable hover effects on touch devices only to prevent sticky hover states */
+@media (hover: none) or (pointer: coarse) {
+    /* On touch devices, prevent hover effects from sticking after touch */
+    /* This doesn't affect desktop hover behavior */
+}

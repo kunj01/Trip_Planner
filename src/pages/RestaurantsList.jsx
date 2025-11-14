@@ -10,13 +10,16 @@ import map from "../img/map.png";
 
 const RestaurantsList = () => {
     // Destructuring all Neccesary state from main Context
-    const { coordinates, isLoading, setIsLoading, setType } = useContext(MainContext);
+    const { coordinates, searchedLocation, isLoading, setIsLoading, setType } = useContext(MainContext);
     const [restaurants, setRestaurants ] = useState();
     const history = useHistory();
 
     // Effect to fetch list of place for component from the getPlacesByLatLng endpoint, effect reran on change of 'coordinates'
     useEffect(() => {
-        if (!coordinates.lat || !coordinates.lng) {
+        // Use searched location if available, otherwise use current coordinates
+        const locationToUse = searchedLocation || coordinates;
+        
+        if (!locationToUse.lat || !locationToUse.lng) {
             setIsLoading(false);
             return;
         }
@@ -28,7 +31,7 @@ const RestaurantsList = () => {
         setIsLoading(true);
 
         // Calling the getPlacesByLatLng endpoint passing 'restaurants' as place type, coordinates (longitude and latitude), a limit parameter and source for error handling
-        getPlacesByLatLng('restaurants', coordinates.lat, coordinates.lng, { limit: 30, min_rating: 4 }, source)
+        getPlacesByLatLng('restaurants', locationToUse.lat, locationToUse.lng, { limit: 30, min_rating: 4 }, source)
             .then(data => {
                 if (isMounted) {
                     // Data is received and set to the 'restaurants' state, filtering out data without 'name' property
@@ -53,7 +56,7 @@ const RestaurantsList = () => {
             isMounted = false;
             source.cancel();
         }
-    }, [coordinates, setIsLoading])
+    }, [coordinates, searchedLocation, setIsLoading])
 
     return ( 
         <>
@@ -64,8 +67,11 @@ const RestaurantsList = () => {
             <div className="container mx-auto pb-4">
                 <div className="text-center my-10">
                     <h1 className="font-semibold text-lg md:text-3xl">
-                        Restaurants near you
+                        {searchedLocation ? `Restaurants in ${searchedLocation.name}` : 'Restaurants near you'}
                     </h1>
+                    {searchedLocation && (
+                        <p className="text-gray-600 mt-2">Showing results for {searchedLocation.name}</p>
+                    )}
                 </div>
 
                 <div className="px-4 lg:grid lg:grid-cols-12 lg:gap-2">

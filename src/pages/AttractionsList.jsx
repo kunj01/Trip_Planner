@@ -9,7 +9,7 @@ import { Link } from "react-router-dom";
 
 const AttractionsList = () => {
     const context = useContext(MainContext);
-    const { coordinates, isLoading, setIsLoading } = context || {};
+    const { coordinates, searchedLocation, isLoading, setIsLoading } = context || {};
     const [attractions, setAttractions] = useState();
     
     // Safety check - if context is not available, show loading
@@ -32,7 +32,10 @@ const AttractionsList = () => {
 
     // Effect to fetch list of places for component from the getPlacesByLatLng endpoint and effect is reran on change of coordinates 
     useEffect(() => {
-        if (!coordinates || !coordinates.lat || !coordinates.lng) {
+        // Use searched location if available, otherwise use current coordinates
+        const locationToUse = searchedLocation || coordinates;
+        
+        if (!locationToUse || !locationToUse.lat || !locationToUse.lng) {
             if (setIsLoading) setIsLoading(false);
             return;
         }
@@ -44,7 +47,7 @@ const AttractionsList = () => {
         setIsLoading(true);
 
         // Calling on the getPlacesByLatLng endpoint passing in the 'attraction' as place type, coordinates (longitude and latitude), a limit parameter and source for error handling
-        getPlacesByLatLng('attractions', coordinates.lat, coordinates.lng, { limit: 30 }, source)
+        getPlacesByLatLng('attractions', locationToUse.lat, locationToUse.lng, { limit: 30 }, source)
             .then(data => {
                 if (isMounted) {
                     // Data is received and set to 'attractions' state list filtering out items with zero reviews, items with id '0' and items with no 'name' property  
@@ -69,7 +72,7 @@ const AttractionsList = () => {
             isMounted = false;
             source.cancel();
         }
-    }, [coordinates, setIsLoading])
+    }, [coordinates, searchedLocation, setIsLoading])
 
     return ( 
         <>
@@ -80,8 +83,11 @@ const AttractionsList = () => {
             <div className="container mx-auto pb-4">
                 <div className="text-center my-10">
                     <h1 className="font-semibold text-lg md:text-3xl">
-                        Attractions near you
+                        {searchedLocation ? `Attractions in ${searchedLocation.name}` : 'Attractions near you'}
                     </h1>
+                    {searchedLocation && (
+                        <p className="text-gray-600 mt-2">Showing results for {searchedLocation.name}</p>
+                    )}
                 </div>
 
                 {/* Attractions Listing */}

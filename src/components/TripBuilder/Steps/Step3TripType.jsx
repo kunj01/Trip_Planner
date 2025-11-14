@@ -151,11 +151,11 @@ const Step3TripType = ({ formData, updateFormData, nextStep, prevStep }) => {
             <button
               onClick={() => handlePetsChange(true)}
               className={`
-                px-8 py-3 rounded-xl border-2 font-bold transition-all duration-300 transform hover:scale-105
+                px-8 py-3 rounded-xl border-2 font-semibold transition-all duration-300 transform hover:scale-105 shadow-sm hover:shadow-md
                 ${
                   formData.withPets
-                    ? 'border-indigo-600 bg-gradient-to-r from-indigo-600 to-purple-600 text-white shadow-lg'
-                    : 'border-indigo-200 bg-white text-indigo-600 hover:bg-indigo-50 hover:border-indigo-400'
+                    ? 'border-gray-600 bg-gray-700 text-white shadow-md'
+                    : 'border-gray-300 bg-white text-gray-700 hover:bg-gray-50 hover:border-gray-400'
                 }
               `}
             >
@@ -164,11 +164,11 @@ const Step3TripType = ({ formData, updateFormData, nextStep, prevStep }) => {
             <button
               onClick={() => handlePetsChange(false)}
               className={`
-                px-8 py-3 rounded-xl border-2 font-bold transition-all duration-300 transform hover:scale-105
+                px-8 py-3 rounded-xl border-2 font-semibold transition-all duration-300 transform hover:scale-105 shadow-sm hover:shadow-md
                 ${
                   !formData.withPets
-                    ? 'border-indigo-600 bg-gradient-to-r from-indigo-600 to-purple-600 text-white shadow-lg'
-                    : 'border-indigo-200 bg-white text-indigo-600 hover:bg-indigo-50 hover:border-indigo-400'
+                    ? 'border-gray-600 bg-gray-700 text-white shadow-md'
+                    : 'border-gray-300 bg-white text-gray-700 hover:bg-gray-50 hover:border-gray-400'
                 }
               `}
             >

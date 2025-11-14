@@ -67,12 +67,43 @@ const Step5Loading = ({ formData, updateFormData, nextStep, prevStep }) => {
           throw new Error('No itinerary days generated. Please try a different destination or check your internet connection.');
         }
 
+        // Collect all place_ids from activities and meals in the itinerary days
+        const activityPlaceIds = [];
+        const mealPlaceIds = [];
+        itineraryDays.forEach(day => {
+          if (day.activities) {
+            day.activities.forEach(activity => {
+              if (activity.place_id) {
+                activityPlaceIds.push(activity.place_id);
+              }
+            });
+          }
+          if (day.meals) {
+            day.meals.forEach(meal => {
+              if (meal.place_id) {
+                mealPlaceIds.push(meal.place_id);
+              }
+            });
+          }
+        });
+
+        // Combine all place_ids: recommendations + activities + meals
+        const allPlaceIds = [
+          ...allRecommendations.map(r => r.place_id || r.id),
+          ...activityPlaceIds,
+          ...mealPlaceIds
+        ];
+        
+        // Remove duplicates
+        const uniquePlaceIds = [...new Set(allPlaceIds)];
+
         // Even if recommendations are empty, we can proceed with the itinerary
         console.log(`Generated ${itineraryDays.length} days and ${allRecommendations.length} recommendations`);
+        console.log(`Found ${activityPlaceIds.length} activity place_ids and ${mealPlaceIds.length} meal place_ids`);
 
         updateFormData({
           recommendations: allRecommendations,
-          selectedRecommendations: allRecommendations.map(r => r.place_id || r.id),
+          selectedRecommendations: uniquePlaceIds,
           itinerary: result,
         });
 

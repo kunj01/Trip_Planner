@@ -72,7 +72,11 @@ export const AuthProvider = ({ children }) => {
         localStorage.setItem('user', JSON.stringify(user));
         return { success: true, message: response.message };
       }
-      return { success: false, message: response.message || 'Login failed' };
+      return { 
+        success: false, 
+        message: response.message || 'Login failed',
+        errors: response.errors || []
+      };
     } catch (error) {
       return {
         success: false,
@@ -94,7 +98,11 @@ export const AuthProvider = ({ children }) => {
         localStorage.setItem('user', JSON.stringify(user));
         return { success: true, message: response.message };
       }
-      return { success: false, message: response.message || 'Signup failed' };
+      return { 
+        success: false, 
+        message: response.message || 'Signup failed',
+        errors: response.errors || []
+      };
     } catch (error) {
       return {
         success: false,

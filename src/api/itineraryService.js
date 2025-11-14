@@ -243,7 +243,7 @@ const generateFallbackItinerary = (destination, numDays, budget = 'moderate', ac
       name: `${timeSlot} Activity in ${destination}`,
       description: `Explore ${destination} during ${timeSlot.toLowerCase()}`,
       location: destination,
-      cost: budget === 'budget' ? 'Free - $20' : budget === 'luxury' ? '$50 - $150' : '$20 - $50',
+      cost: budget === 'budget' ? 'Free - ₹1,660' : budget === 'luxury' ? '₹4,150 - ₹12,450' : '₹1,660 - ₹4,150',
       place_id: `fallback-${dayIndex}-${idx}`,
     }));
 
@@ -273,7 +273,9 @@ const generateFallbackItinerary = (destination, numDays, budget = 'moderate', ac
   };
   const baseCost = 1500;
   const budgetMultiplier = budgetMultipliers[budget] || 1.0;
-  const totalCost = Math.round(baseCost * budgetMultiplier * numDays);
+  const totalCostUSD = Math.round(baseCost * budgetMultiplier * numDays);
+  // Convert to INR (1 USD = 83 INR)
+  const totalCost = Math.round(totalCostUSD * 83);
 
   return {
     destination,
@@ -288,7 +290,7 @@ const generateFallbackItinerary = (destination, numDays, budget = 'moderate', ac
         { item: 'Food', cost: Math.round(totalCost * 0.1) },
       ],
     },
-    totalCost: `$${totalCost.toLocaleString()}`,
+    totalCost: `₹${totalCost.toLocaleString('en-IN')}`,
     tips: [
       `Pack for ${activityLevel === 'active' ? 'active' : 'comfortable'} activities.`,
       'Stay hydrated and carry water with you.',
@@ -512,7 +514,9 @@ export const generateItineraryWithDetails = async (formData) => {
     };
     const baseCost = 1500;
     const budgetMultiplier = budgetMultipliers[budget] || 1.0;
-    const totalCost = Math.round(baseCost * budgetMultiplier * numDays);
+    const totalCostUSD = Math.round(baseCost * budgetMultiplier * numDays);
+    // Convert to INR (1 USD = 83 INR)
+    const totalCost = Math.round(totalCostUSD * 83);
 
     const daysArray = Array.from({ length: parseInt(numDays) }, (_, dayIndex) => {
       const dayNum = dayIndex + 1;
@@ -545,7 +549,7 @@ export const generateItineraryWithDetails = async (formData) => {
               name: attraction.name || 'Attraction',
               description: `Visit ${attraction.name || 'this attraction'}${attraction.rating ? ` (Rating: ${attraction.rating}/5)` : ''}`,
               location: attraction.formatted_address || destination,
-              cost: budget === 'budget' ? 'Free - $20' : budget === 'luxury' ? '$50 - $150' : '$20 - $50',
+              cost: budget === 'budget' ? 'Free - ₹1,660' : budget === 'luxury' ? '₹4,150 - ₹12,450' : '₹1,660 - ₹4,150',
               place_id: attraction.place_id || `placeholder-${dayIndex}-${attractionIndex}`,
               lat: lat,
               lng: lng,
@@ -667,7 +671,7 @@ export const generateItineraryWithDetails = async (formData) => {
           { item: 'Food', cost: Math.round(totalCost * 0.1) },
         ],
       },
-      totalCost: `$${totalCost.toLocaleString()}`,
+      totalCost: `₹${totalCost.toLocaleString('en-IN')}`,
       tips: travelTips,
     };
 
@@ -818,7 +822,7 @@ export const generateItinerary = async (formData) => {
               name: attraction.name || 'Attraction',
               description: `Visit ${attraction.name}${attraction.rating ? ` (Rating: ${attraction.rating}/5)` : ''}`,
               location: attraction.formatted_address || destination,
-              cost: budget === 'budget' ? 'Free - $20' : budget === 'luxury' ? '$50 - $150' : '$20 - $50',
+              cost: budget === 'budget' ? 'Free - ₹1,660' : budget === 'luxury' ? '₹4,150 - ₹12,450' : '₹1,660 - ₹4,150',
             });
             attractionIndex++;
           }
@@ -917,7 +921,7 @@ export const generateItinerary = async (formData) => {
           { item: 'Food', cost: Math.round(totalCost * 0.1) },
         ],
       },
-      totalCost: `$${totalCost.toLocaleString()}`,
+      totalCost: `₹${totalCost.toLocaleString('en-IN')}`,
       tips: travelTips, // Changed from travelTips to tips to match component expectation
     };
   } catch (error) {

@@ -6,8 +6,15 @@ import { BrowserRouter as Router } from "react-router-dom"
 import { MainContextProvider } from "./context/MainContext"
 import { AuthProvider } from "./context/AuthContext"
 
-// Suppress CORS errors from browser extensions (like Sentry from temp-mail extensions)
+// Prevent hover flashing during clicks and suppress CORS errors from browser extensions
 if (typeof window !== 'undefined') {
+  // Handle touch devices - disable hover effects on touch-only devices
+  if (window.matchMedia('(hover: none)').matches) {
+    // On touch devices, add class to prevent sticky hover states
+    document.body.classList.add('no-hover-touch');
+  }
+
+  // Suppress CORS errors from browser extensions (like Sentry from temp-mail extensions)
   // Handle unhandled promise rejections from browser extensions
   window.addEventListener('unhandledrejection', (event) => {
     const error = event.reason;
