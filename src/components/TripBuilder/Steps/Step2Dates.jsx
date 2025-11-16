@@ -61,15 +61,15 @@ const Step2Dates = ({ formData, updateFormData, nextStep, prevStep }) => {
   const isValidRange = startDate && endDate && days <= 7 && days > 0;
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center px-4 py-12">
+    <div className="h-full flex flex-col items-center justify-center px-4 py-6">
       <div className="w-full max-w-4xl">
         {/* Main Heading */}
-        <h1 className="text-5xl md:text-6xl font-bold text-gray-800 text-center mb-4">
+        <h1 className="text-3xl md:text-4xl font-bold text-gray-800 text-center mb-3">
           When are you going?
         </h1>
         
         {/* Sub-text */}
-        <p className="text-gray-600 text-center mb-12 text-xl max-w-2xl mx-auto">
+        <p className="text-gray-600 text-center mb-6 text-base max-w-2xl mx-auto">
           Choose a date range, up to 7 days.
         </p>
 

@@ -130,7 +130,7 @@ const Step5Loading = ({ formData, updateFormData, nextStep, prevStep }) => {
 
   if (error) {
     return (
-      <div className="min-h-screen flex flex-col items-center justify-center px-4 py-12">
+      <div className="h-full flex flex-col items-center justify-center px-4 py-6">
         <div className="w-full max-w-2xl text-center">
           <div className="bg-red-50 border border-red-200 rounded-lg p-8">
             <div className="flex flex-col items-center">
@@ -173,7 +173,7 @@ const Step5Loading = ({ formData, updateFormData, nextStep, prevStep }) => {
   }
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center px-4 py-12">
+    <div className="h-full flex flex-col items-center justify-center px-4 py-6">
       <div className="w-full max-w-2xl text-center">
         {/* Loading Overlay */}
         <div className="bg-gray-700 rounded-2xl p-12 text-white shadow-2xl">

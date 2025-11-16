@@ -124,7 +124,7 @@ const Step6Review = ({ formData, updateFormData, nextStep, prevStep }) => {
   
   if (recommendations.length === 0 && recommendationGroups.length === 0 && !hasItinerary) {
     return (
-      <div className="min-h-screen bg-gray-50 flex flex-col items-center justify-center px-4 py-12">
+      <div className="h-full bg-gray-50 flex flex-col items-center justify-center px-4 py-6">
         <div className="w-full max-w-2xl text-center">
           <div className="bg-white rounded-xl shadow-lg p-12 border border-gray-200">
             <svg
@@ -161,14 +161,16 @@ const Step6Review = ({ formData, updateFormData, nextStep, prevStep }) => {
   // If no recommendations but we have itinerary, show a message but allow proceeding
   if (recommendations.length === 0 && recommendationGroups.length === 0 && hasItinerary) {
     return (
-      <div className="min-h-screen bg-gray-50">
-        <div className="max-w-4xl mx-auto py-12 px-4">
+      <div className="h-full bg-gray-50 overflow-hidden">
+        <div className="max-w-4xl mx-auto py-6 px-4">
           <div className="bg-white rounded-xl shadow-lg p-8 border border-gray-200">
             <div className="mb-6">
               <p className="text-sm text-gray-600 mb-2">Review our recommendations for your trip</p>
               <h1 className="text-3xl font-bold text-gray-800 mb-2">{formData.destination || 'Your Destination'}</h1>
               <p className="text-gray-600">
-                {getTripTypeLabel()} • {getDateRange()} • {getDaysCount()} {getDaysCount() === 1 ? 'day' : 'days'}
+                {getTripTypeLabel()} 
+                {getDateRange()} 
+                {getDaysCount()} {getDaysCount() === 1 ? 'day' : 'days'}
               </p>
             </div>
             
@@ -216,7 +218,7 @@ const Step6Review = ({ formData, updateFormData, nextStep, prevStep }) => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="h-full bg-gray-50 overflow-hidden">
       <div className="max-w-6xl mx-auto py-12 px-4">
         <div className="bg-white rounded-xl shadow-lg border border-gray-200">
           <div className="p-6">

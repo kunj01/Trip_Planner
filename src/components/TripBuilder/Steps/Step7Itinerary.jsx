@@ -4,6 +4,7 @@ import moment from 'moment';
 import { generateItineraryPDF } from '../../../utils/pdfGenerator';
 import { itineraryApiService } from '../../../api/itineraryApiService';
 import { useAuth } from '../../../context/AuthContext';
+import ItineraryMapView from '../../ItineraryMapView';
 
 const Step7Itinerary = ({ formData, updateFormData, prevStep, goToStep }) => {
   const history = useHistory();
@@ -13,6 +14,7 @@ const Step7Itinerary = ({ formData, updateFormData, prevStep, goToStep }) => {
   const [showMenuFor, setShowMenuFor] = useState(null); // Track which item's menu is open
   const [bookmarkedDays, setBookmarkedDays] = useState(new Set());
   const [saving, setSaving] = useState(false);
+  const [viewMode, setViewMode] = useState('list'); // 'list' or 'map'
   const itinerary = formData.itinerary || {};
   const days = itinerary.days || [];
   const selectedRecommendations = formData.selectedRecommendations || [];
@@ -257,6 +259,49 @@ const Step7Itinerary = ({ formData, updateFormData, prevStep, goToStep }) => {
     }
   }, [showMenuFor]);
 
+  // If map view is selected and we have itinerary data, show the map view
+  if (viewMode === 'map' && activeTab === 'itinerary') {
+    console.log('=== Step7: Rendering Map View ===');
+    console.log('formData:', formData);
+    console.log('itinerary:', itinerary);
+    console.log('days:', days);
+    
+    const mapData = {
+      destination: formData.destination,
+      startDate: formData.startDate,
+      endDate: formData.endDate,
+      itinerary: itinerary,
+      title: `Trip to ${formData.destination}`,
+    };
+    
+    console.log('mapData prepared:', mapData);
+    
+    return (
+      <div className="h-screen bg-blue-50 relative">
+        {/* Debug Banner */}
+        <div className="bg-yellow-200 p-2 text-center text-sm font-semibold">
+          DEBUG: Map View Mode Active - Check Console for Logs
+        </div>
+        {/* View Toggle Button */}
+        <div className="absolute top-16 right-4 z-50">
+          <button
+            onClick={() => {
+              console.log('Switching back to list view');
+              setViewMode('list');
+            }}
+            className="px-4 py-2 bg-white text-gray-700 rounded-lg font-medium border border-gray-300 hover:bg-gray-50 transition-all duration-200 shadow-md flex items-center gap-2"
+          >
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 10h16M4 14h16M4 18h16" />
+            </svg>
+            List View
+          </button>
+        </div>
+        <ItineraryMapView itineraryData={mapData} isViewMode={false} />
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-gray-50">
       <div className="max-w-6xl mx-auto py-12 px-4">
@@ -296,6 +341,17 @@ const Step7Itinerary = ({ formData, updateFormData, prevStep, goToStep }) => {
                 </button>
               </div>
               <div className="flex items-center gap-4">
+                {activeTab === 'itinerary' && (
+                  <button
+                    onClick={() => setViewMode('map')}
+                    className="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg font-medium hover:bg-gray-200 transition-all duration-200 flex items-center gap-2"
+                  >
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7" />
+                    </svg>
+                    Map View
+                  </button>
+                )}
                 <span className="text-sm font-medium text-gray-600 bg-gray-100 px-4 py-2 rounded-lg">
                   {totalSaves} {totalSaves === 1 ? 'item' : 'items'} in itinerary
                 </span>

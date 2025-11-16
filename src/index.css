@@ -48,6 +48,34 @@ body {
 /* Prevent hover flashing during clicks */
 * {
     -webkit-tap-highlight-color: transparent;
+    user-select: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+}
+
+/* Allow text selection only in input fields and editable content */
+input, 
+textarea, 
+[contenteditable="true"],
+[contenteditable] {
+    user-select: text !important;
+    -webkit-user-select: text !important;
+    -moz-user-select: text !important;
+    -ms-user-select: text !important;
+}
+
+/* Change cursor to default for all elements except inputs */
+* {
+    cursor: default;
+}
+
+button, a, [role="button"], .cursor-pointer {
+    cursor: pointer !important;
+}
+
+input, textarea, [contenteditable] {
+    cursor: text !important;
 }
 
 /* Remove default focus outline but keep accessibility */

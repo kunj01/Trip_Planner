@@ -69,23 +69,23 @@ const Step1Destination = ({ formData, updateFormData, nextStep }) => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center px-4 py-12">
+    <div className="h-full flex flex-col items-center justify-center px-4 py-6">
       <div className="w-full max-w-4xl">
         {/* Main Heading */}
-        <h1 className="text-5xl md:text-6xl font-bold text-gray-900 text-center mb-4">
+        <h1 className="text-3xl md:text-4xl font-bold text-gray-900 text-center mb-3">
           Where do you want to go?
         </h1>
         
         {/* Sub-text */}
-        <p className="text-gray-600 text-center mb-12 text-xl max-w-2xl mx-auto">
+        <p className="text-gray-600 text-center mb-6 text-base max-w-2xl mx-auto">
           Discover personalized recommendations and create your perfect travel itinerary
         </p>
 
         {/* Search Input */}
-        <div className="relative mb-12">
+        <div className="relative mb-6">
           <div className="relative">
             <svg
-              className="absolute left-6 top-1/2 transform -translate-y-1/2 w-6 h-6 text-gray-400"
+              className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -98,7 +98,7 @@ const Step1Destination = ({ formData, updateFormData, nextStep }) => {
               onChange={handleSearch}
               onFocus={() => searchQuery.length > 2 && setShowResults(true)}
               placeholder="Search for a destination..."
-              className="w-full pl-16 pr-6 py-5 text-lg border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-400 focus:border-gray-500 bg-white"
+              className="w-full pl-12 pr-4 py-3 text-base border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-400 focus:border-gray-500 bg-white"
             />
           </div>
 
@@ -120,11 +120,11 @@ const Step1Destination = ({ formData, updateFormData, nextStep }) => {
         </div>
 
         {/* Popular Destinations */}
-        <div className="mb-12">
-          <h2 className="text-center text-gray-700 text-xl font-semibold mb-8">
+        <div className="mb-6">
+          <h2 className="text-center text-gray-700 text-base font-semibold mb-4">
             Or explore popular destinations
           </h2>
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-5">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
             {popularDestinations.map((dest, index) => (
               <div
                 key={index}
@@ -144,9 +144,9 @@ const Step1Destination = ({ formData, updateFormData, nextStep }) => {
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
                 </div>
-                <div className="p-4 bg-white">
-                  <p className="font-bold text-gray-900 text-sm">{dest.name}</p>
-                  <p className="text-xs text-gray-600 mt-1">{dest.country}</p>
+                <div className="p-2 bg-white">
+                  <p className="font-bold text-gray-900 text-xs">{dest.name}</p>
+                  <p className="text-xs text-gray-600">{dest.country}</p>
                 </div>
               </div>
             ))}
@@ -158,7 +158,7 @@ const Step1Destination = ({ formData, updateFormData, nextStep }) => {
           <button
             onClick={handleNext}
             disabled={!formData.destination}
-            className={`px-10 py-4 rounded-xl font-semibold text-white text-lg transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105 ${
+            className={`px-6 py-2.5 rounded-lg font-semibold text-white text-base transition-all duration-300 shadow-md hover:shadow-lg ${
               formData.destination
                 ? 'bg-gray-700 hover:bg-gray-600 cursor-pointer'
                 : 'bg-gray-300 cursor-not-allowed'

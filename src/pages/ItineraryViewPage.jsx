@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useHistory } from 'react-router-dom';
 import { itineraryApiService } from '../api/itineraryApiService';
-import ItineraryView from '../components/ItineraryView';
+import ItineraryMapView from '../components/ItineraryMapView';
 
 const ItineraryViewPage = () => {
   const { id } = useParams();
@@ -95,7 +95,7 @@ const ItineraryViewPage = () => {
     );
   }
 
-  return <ItineraryView itineraryData={itinerary} isViewMode={true} />;
+  return <ItineraryMapView itineraryData={itinerary} isViewMode={true} />;
 };
 
 export default ItineraryViewPage;

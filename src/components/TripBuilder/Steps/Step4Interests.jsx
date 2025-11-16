@@ -59,7 +59,7 @@ const Step4Interests = ({ formData, updateFormData, nextStep, prevStep }) => {
   const selectedCount = (formData.interests || []).length;
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center px-4 py-12">
+    <div className="h-full flex flex-col items-center justify-center px-4 py-6">
       <div className="w-full max-w-5xl">
         {/* Main Heading */}
         <h1 className="text-5xl md:text-6xl font-bold text-gray-800 text-center mb-4">

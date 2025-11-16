@@ -114,10 +114,10 @@ const TripBuilder = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="h-screen bg-gray-50 flex flex-col overflow-hidden">
       {/* Progress Bar */}
       {currentStep < 7 && (
-        <div className="w-full bg-gray-200 h-1 relative overflow-hidden">
+        <div className="w-full bg-gray-200 h-1 relative overflow-hidden flex-shrink-0">
           <div
             className="h-full bg-gray-700 transition-all duration-500 ease-out shadow-sm"
             style={{ width: `${(currentStep / totalSteps) * 100}%` }}
@@ -132,8 +132,10 @@ const TripBuilder = () => {
       )}
 
       {/* Step Content */}
-      <div className="max-w-7xl mx-auto">
-        {renderStep()}
+      <div className="flex-1 overflow-hidden">
+        <div className="max-w-7xl mx-auto h-full">
+          {renderStep()}
+        </div>
       </div>
     </div>
   );

@@ -134,11 +134,11 @@ const Navbar = ({ sticky, border }) => {
                             // Logged in - Profile Dropdown
                             <button
                                 onClick={() => setIsProfileDropdownOpen(!isProfileDropdownOpen)}
-                                className="flex items-center space-x-2 rounded-full bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 text-white py-2.5 px-6 hover:from-blue-700 hover:via-indigo-700 hover:to-purple-700 transition-all duration-200 shadow-lg hover:shadow-xl hover:scale-105 transform whitespace-nowrap"
+                                className="flex items-center space-x-2 rounded-full bg-gray-800 text-white py-2.5 px-6"
                             >
-                                <div className="w-7 h-7 rounded-full bg-white bg-opacity-30 flex items-center justify-center backdrop-blur-sm">
+                                <div className="w-7 h-7 rounded-full bg-gray-700 flex items-center justify-center">
                                     <svg
-                                        className="w-4 h-4"
+                                        className="w-4 h-4 text-gray-300"
                                         xmlns="http://www.w3.org/2000/svg"
                                         viewBox="0 0 20 20"
                                         fill="currentColor"
@@ -150,9 +150,9 @@ const Navbar = ({ sticky, border }) => {
                                         />
                                     </svg>
                                 </div>
-                                <span className="font-semibold text-sm hidden lg:block">{user.fullName}</span>
+                                <span className="font-semibold text-sm hidden lg:block text-gray-300">{user.fullName}</span>
                                 <svg
-                                    className={`w-4 h-4 transition-transform duration-200 ${isProfileDropdownOpen ? 'rotate-180' : ''}`}
+                                    className="w-4 h-4 text-gray-300"
                                     xmlns="http://www.w3.org/2000/svg"
                                     viewBox="0 0 20 20"
                                     fill="currentColor"
@@ -168,10 +168,10 @@ const Navbar = ({ sticky, border }) => {
                             // Not logged in - Login/Signup Button
                             <button
                                 onClick={() => setIsProfileDropdownOpen(!isProfileDropdownOpen)}
-                                className="flex items-center space-x-2 rounded-full border-2 border-gray-300 hover:border-blue-500 bg-white text-gray-700 hover:text-blue-600 py-2.5 px-6 transition-all duration-200 hover:shadow-lg hover:scale-105 transform font-semibold whitespace-nowrap"
+                                className="flex items-center space-x-2 rounded-full border-2 border-gray-300 bg-white text-gray-700 py-2.5 px-6"
                             >
                                 <svg
-                                    className="w-4 h-4"
+                                    className="w-4 h-4 text-gray-500"
                                     xmlns="http://www.w3.org/2000/svg"
                                     viewBox="0 0 20 20"
                                     fill="currentColor"
@@ -182,9 +182,9 @@ const Navbar = ({ sticky, border }) => {
                                         clipRule="evenodd"
                                     />
                                 </svg>
-                                <span className="text-sm hidden lg:block">Account</span>
+                                <span className="text-sm hidden lg:block text-gray-500">Account</span>
                                 <svg
-                                    className={`w-4 h-4 transition-transform duration-200 ${isProfileDropdownOpen ? 'rotate-180' : ''}`}
+                                    className="w-4 h-4 text-gray-500"
                                     xmlns="http://www.w3.org/2000/svg"
                                     viewBox="0 0 20 20"
                                     fill="currentColor"

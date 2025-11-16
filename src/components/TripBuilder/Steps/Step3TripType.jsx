@@ -27,7 +27,7 @@ const Step3TripType = ({ formData, updateFormData, nextStep, prevStep }) => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center px-4 py-12">
+    <div className="h-full flex flex-col items-center justify-center px-4 py-6">
       <div className="w-full max-w-4xl">
         {/* Main Heading */}
         <h1 className="text-5xl md:text-6xl font-bold text-gray-800 text-center mb-4">
